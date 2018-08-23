@@ -66,8 +66,9 @@ func GeneratePIS() string {
 func (p pis) hasExpectedFormat() Validation {
 	var valid bool
 
-	pattern1 := regexp.MustCompile(`^[0-9]{11}$`)
-	valid = pattern1.MatchString(p.Number)
+	cleanString := regexp.MustCompile(`[^0-9]`).ReplaceAllString(p.Number, "")
+
+	valid = regexp.MustCompile(`^[0-9]{11}$`).MatchString(cleanString)
 	if valid {
 		return Validation{
 			Valid:  true,
@@ -75,8 +76,7 @@ func (p pis) hasExpectedFormat() Validation {
 		}
 	}
 
-	pattern2 := regexp.MustCompile(`^[0-9]{3}[\.][0-9]{5}[\.][0-9]{2}[-][0-9]{1}$`)
-	valid = pattern2.MatchString(p.Number)
+	valid = regexp.MustCompile(`^[0-9]{13}$`).MatchString(cleanString)
 	if valid {
 		return Validation{
 			Valid:  true,
@@ -96,8 +96,7 @@ func (p pis) isValid() Validation {
 
 	var multipliers = []int{3, 2, 9, 8, 7, 6, 5, 4, 3, 2}
 
-	pattern := regexp.MustCompile(`[^0-9]`)
-	cleanString := pattern.ReplaceAllString(p.Number, "")
+	cleanString := regexp.MustCompile(`[^0-9]`).ReplaceAllString(p.Number, "")
 
 	onlyDigit, _ := strconv.Atoi(string(cleanString[10]))
 

@@ -1,8 +1,9 @@
 package main
 
 import (
-	brazil "go-brazil"
 	"log"
+
+	brazil "github.com/flavioltonon/go-brazil"
 )
 
 func main() {
@@ -10,7 +11,7 @@ func main() {
 
 	log.Println(brazil.EvaluateTituloEleitoral(brazil.ParseTituloEleitoral("XXXXXXXXXXXX")))
 
-	log.Println(brazil.EvaluatePIS(brazil.ParsePIS("XXX.XXXXX.XX-XX")))
+	log.Println(brazil.EvaluatePIS(brazil.ParsePIS("XXX.XXXXX.XX-X")))
 
 	date := brazil.ParseDate("DD/MM/YYYY")
 	log.Println(date.IsFuture())

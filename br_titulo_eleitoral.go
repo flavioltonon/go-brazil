@@ -103,9 +103,10 @@ func GenerateTituloEleitoral() string {
 func (t tituloEleitoral) hasExpectedFormat() Validation {
 	var valid bool
 
+	cleanString := regexp.MustCompile(`[^0-9]`).ReplaceAllString(t.Number, "")
+
 	// First pattern: 12 digits
-	pattern1 := regexp.MustCompile(`^[0-9]{12}$`)
-	valid = pattern1.MatchString(t.Number)
+	valid = regexp.MustCompile(`^[0-9]{12}$`).MatchString(cleanString)
 	if valid {
 		return Validation{
 			Valid:  true,
@@ -114,8 +115,7 @@ func (t tituloEleitoral) hasExpectedFormat() Validation {
 	}
 
 	// Second pattern: 14 digits
-	pattern2 := regexp.MustCompile(`^[0-9]{14}$`)
-	valid = pattern2.MatchString(t.Number)
+	valid = regexp.MustCompile(`^[0-9]{14}$`).MatchString(cleanString)
 	if valid {
 		return Validation{
 			Valid:  true,
@@ -133,8 +133,7 @@ func (t tituloEleitoral) isValid() Validation {
 	var sum int
 	var digit int
 
-	pattern := regexp.MustCompile(`[^0-9]`)
-	cleanString := pattern.ReplaceAllString(t.Number, "")
+	cleanString := regexp.MustCompile(`[^0-9]`).ReplaceAllString(t.Number, "")
 
 	firstDigit, _ := strconv.Atoi(string(cleanString[10]))
 	secondDigit, _ := strconv.Atoi(string(cleanString[11]))

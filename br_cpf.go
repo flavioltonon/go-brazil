@@ -73,19 +73,9 @@ func GenerateCPF() string {
 func (c cpf) hasExpectedFormat() Validation {
 	var valid bool
 
-	pattern1 := regexp.MustCompile(`^[0-9]{11}$`)
-	valid = pattern1.MatchString(c.Number)
+	cleanString := regexp.MustCompile(`[^0-9]`).ReplaceAllString(c.Number, "")
 
-	if valid {
-		return Validation{
-			Valid:  true,
-			Reason: nil,
-		}
-	}
-
-	pattern2 := regexp.MustCompile(`^[0-9]{3}[\.][0-9]{3}[\.][0-9]{3}[-][0-9]{2}$`)
-	valid = pattern2.MatchString(c.Number)
-
+	valid = regexp.MustCompile(`^[0-9]{11}$`).MatchString(cleanString)
 	if valid {
 		return Validation{
 			Valid:  true,
@@ -103,8 +93,7 @@ func (c cpf) isValid() Validation {
 	var sum int
 	var digit int
 
-	pattern := regexp.MustCompile(`[^0-9]`)
-	cleanString := pattern.ReplaceAllString(c.Number, "")
+	cleanString := regexp.MustCompile(`[^0-9]`).ReplaceAllString(c.Number, "")
 
 	firstDigit, _ := strconv.Atoi(string(cleanString[9]))
 	secondDigit, _ := strconv.Atoi(string(cleanString[10]))
