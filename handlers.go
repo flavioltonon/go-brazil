@@ -2,11 +2,6 @@ package brazil
 
 import "time"
 
-type Validation struct {
-	Valid  bool  `json:"valid"`
-	Reason error `json:"reason"`
-}
-
 // CPF
 type cpf struct {
 	Number string `json:"number"`
