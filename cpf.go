@@ -8,26 +8,39 @@ import (
 	"time"
 )
 
-func ParseCPF(number string) cpf {
-	return cpf{
-		Number: number,
-	}
+func (c *CPF) SetNumber(n string) {
+	c.number.number = n
+	c.number.validation = Validation{}
+	c.valid = false
 }
 
-func EvaluateCPF(c cpf) Validation {
-	var v Validation
-
-	v = c.hasExpectedFormat()
-	if v.Valid {
-		v = c.isValid()
+func (c *CPF) IsValid() bool {
+	c.number.validation = c.numberIsValid()
+	c.birthdate.validation = c.dateIsValid()
+	if c.number.validation.Valid && c.birthdate.validation.Valid {
+		c.valid = true
+		return true
 	}
-	return Validation{
-		Valid:  v.Valid,
-		Reason: v.Reason,
-	}
+	return false
 }
 
-func GenerateCPF() string {
+func (c CPF) Errors() []error {
+	var errors []error
+
+	if c.valid {
+		return nil
+	}
+	if !c.number.validation.Valid {
+		errors = append(errors, c.number.validation.Reason)
+	}
+	if !c.birthdate.validation.Valid {
+		errors = append(errors, c.birthdate.validation.Reason)
+	}
+
+	return errors
+}
+
+func RandomCPFNumber() string {
 	var i, sum int
 
 	source := rand.NewSource(time.Now().UnixNano())
@@ -70,30 +83,24 @@ func GenerateCPF() string {
 	}, "")
 }
 
-func (c cpf) hasExpectedFormat() Validation {
-	var valid bool
-
-	cleanString := regexp.MustCompile(`[^0-9]`).ReplaceAllString(c.Number, "")
-
-	valid = regexp.MustCompile(`^[0-9]{11}$`).MatchString(cleanString)
-	if valid {
+func (c CPF) numberIsValid() Validation {
+	if c.number.number == "" {
 		return Validation{
-			Valid:  true,
-			Reason: nil,
+			Valid:  false,
+			Reason: errFieldNumberIsRequired,
 		}
 	}
 
-	return Validation{
-		Valid:  false,
-		Reason: errIncorrectFormatCpf,
+	cleanString := regexp.MustCompile(`[^0-9]`).ReplaceAllString(c.number.number, "")
+	v := regexp.MustCompile(`^[0-9]{11}$`).MatchString(cleanString)
+	if !v {
+		return Validation{
+			Valid:  false,
+			Reason: errIncorrectFormatCpfNumber,
+		}
 	}
-}
 
-func (c cpf) isValid() Validation {
-	var sum int
-	var digit int
-
-	cleanString := regexp.MustCompile(`[^0-9]`).ReplaceAllString(c.Number, "")
+	var sum, digit int
 
 	firstDigit, _ := strconv.Atoi(string(cleanString[9]))
 	secondDigit, _ := strconv.Atoi(string(cleanString[10]))
@@ -103,7 +110,7 @@ func (c cpf) isValid() Validation {
 	if numbers%11111111111 == 0 {
 		return Validation{
 			Valid:  false,
-			Reason: errInvalidCpf,
+			Reason: errInvalidCpfNumber,
 		}
 	}
 
@@ -119,7 +126,7 @@ func (c cpf) isValid() Validation {
 	if digit != firstDigit {
 		return Validation{
 			Valid:  false,
-			Reason: errInvalidCpf,
+			Reason: errInvalidCpfNumber,
 		}
 	}
 
@@ -136,13 +143,33 @@ func (c cpf) isValid() Validation {
 	if digit != secondDigit {
 		return Validation{
 			Valid:  false,
-			Reason: errInvalidCpf,
+			Reason: errInvalidCpfNumber,
 		}
 	}
 
-	// Success
 	return Validation{
 		Valid:  true,
-		Reason: nil,
+		Reason: errValidCpfNumber,
+	}
+}
+
+func (c CPF) dateIsValid() Validation {
+	if !c.birthdate.notNull {
+		return Validation{
+			Valid:  true,
+			Reason: errFieldDateNotRequired,
+		}
+	}
+
+	if !c.birthdate.IsValid() {
+		return Validation{
+			Valid:  false,
+			Reason: errIncorrectFormatDate,
+		}
+	}
+
+	return Validation{
+		Valid:  true,
+		Reason: errValidDate,
 	}
 }

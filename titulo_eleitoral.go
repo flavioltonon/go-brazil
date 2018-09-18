@@ -8,26 +8,49 @@ import (
 	"time"
 )
 
-func ParseTituloEleitoral(number string) tituloEleitoral {
-	return tituloEleitoral{
-		Number: number,
-	}
+func (t *TituloEleitoral) Number(n string) {
+	t.number.number = n
+	t.number.validation = Validation{}
+	t.valid = false
 }
 
-func EvaluateTituloEleitoral(t tituloEleitoral) Validation {
-	var v Validation
-
-	v = t.hasExpectedFormat()
-	if v.Valid {
-		v = t.isValid()
-	}
-	return Validation{
-		Valid:  v.Valid,
-		Reason: v.Reason,
-	}
+func (t *TituloEleitoral) IssueDate(r BrDate) {
+	t.issueDate = r
+	t.issueDate.validation = Validation{}
+	t.valid = false
 }
 
-func GenerateTituloEleitoral() string {
+func (t TituloEleitoral) GetNumber() string {
+	return t.number.number
+}
+
+func (t *TituloEleitoral) IsValid() bool {
+	t.number.validation = t.numberIsValid()
+	t.issueDate.validation = t.dateIsValid()
+	if t.number.validation.Valid && t.issueDate.validation.Valid {
+		t.valid = true
+		return true
+	}
+	return false
+}
+
+func (t *TituloEleitoral) Errors() []error {
+	var errors []error
+
+	if t.valid {
+		return nil
+	}
+	if !t.number.validation.Valid {
+		errors = append(errors, t.number.validation.Reason)
+	}
+	if !t.issueDate.validation.Valid {
+		errors = append(errors, t.issueDate.validation.Reason)
+	}
+
+	return errors
+}
+
+func RandomTituloEleitoralNumber() string {
 	var i, sum int
 	var digitlessTitulo string
 
@@ -100,40 +123,25 @@ func GenerateTituloEleitoral() string {
 	}, "")
 }
 
-func (t tituloEleitoral) hasExpectedFormat() Validation {
-	var valid bool
-
-	cleanString := regexp.MustCompile(`[^0-9]`).ReplaceAllString(t.Number, "")
-
-	// First pattern: 12 digits
-	valid = regexp.MustCompile(`^[0-9]{12}$`).MatchString(cleanString)
-	if valid {
+func (t TituloEleitoral) numberIsValid() Validation {
+	if t.number.number == "" {
 		return Validation{
-			Valid:  true,
-			Reason: nil,
+			Valid:  false,
+			Reason: errFieldNumberIsRequired,
 		}
 	}
 
-	// Second pattern: 14 digits
-	valid = regexp.MustCompile(`^[0-9]{14}$`).MatchString(cleanString)
-	if valid {
+	cleanString := regexp.MustCompile(`[^0-9]`).ReplaceAllString(t.number.number, "")
+	v1 := regexp.MustCompile(`^[0-9]{12}$`).MatchString(cleanString)
+	v2 := regexp.MustCompile(`^[0-9]{14}$`).MatchString(cleanString)
+	if !v1 && !v2 {
 		return Validation{
-			Valid:  true,
-			Reason: nil,
+			Valid:  false,
+			Reason: errIncorrectFormatTituloEleitoralNumber,
 		}
 	}
 
-	return Validation{
-		Valid:  false,
-		Reason: errIncorrectFormatTituloEleitoral,
-	}
-}
-
-func (t tituloEleitoral) isValid() Validation {
-	var sum int
-	var digit int
-
-	cleanString := regexp.MustCompile(`[^0-9]`).ReplaceAllString(t.Number, "")
+	var sum, digit int
 
 	firstDigit, _ := strconv.Atoi(string(cleanString[10]))
 	secondDigit, _ := strconv.Atoi(string(cleanString[11]))
@@ -143,7 +151,7 @@ func (t tituloEleitoral) isValid() Validation {
 	if numbers == 0 {
 		return Validation{
 			Valid:  false,
-			Reason: errInvalidTituloEleitoral,
+			Reason: errInvalidTituloEleitoralNumber,
 		}
 	}
 
@@ -171,7 +179,7 @@ func (t tituloEleitoral) isValid() Validation {
 	if digit != firstDigit {
 		return Validation{
 			Valid:  false,
-			Reason: errInvalidTituloEleitoral,
+			Reason: errInvalidTituloEleitoralNumber,
 		}
 	}
 
@@ -200,13 +208,33 @@ func (t tituloEleitoral) isValid() Validation {
 	if digit != secondDigit {
 		return Validation{
 			Valid:  false,
-			Reason: errInvalidTituloEleitoral,
+			Reason: errInvalidTituloEleitoralNumber,
 		}
 	}
 
-	// Success
 	return Validation{
 		Valid:  true,
-		Reason: nil,
+		Reason: errValidTituloEleitoralNumber,
+	}
+}
+
+func (t TituloEleitoral) dateIsValid() Validation {
+	if !t.issueDate.notNull {
+		return Validation{
+			Valid:  true,
+			Reason: errFieldDateNotRequired,
+		}
+	}
+
+	if !t.issueDate.IsValid() {
+		return Validation{
+			Valid:  false,
+			Reason: errIncorrectFormatDate,
+		}
+	}
+
+	return Validation{
+		Valid:  true,
+		Reason: errValidDate,
 	}
 }

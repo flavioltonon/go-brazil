@@ -2,28 +2,45 @@ package brazil
 
 import "time"
 
-// CPF
-type cpf struct {
-	Number string `json:"number"`
+// CPF struct
+type CPF struct {
+	number    Number
+	fullName  string
+	birthdate BrDate
+	valid     bool
 }
 
-// Título de eleitor
-type tituloEleitoral struct {
-	Number string `json:"number"`
+// Título de eleitor struct
+type TituloEleitoral struct {
+	number    Number
+	zone      string
+	section   string
+	state     string
+	city      string
+	issueDate BrDate
+	valid     bool
 }
 
-// PIS
-type pis struct {
-	Number string `json:"number"`
+// PIS struct
+type PIS struct {
+	number       Number
+	registration BrDate
+	valid        bool
 }
 
-// Date
-type brDate struct {
-	Date time.Time `json:"date"`
-	Err  error     `json:"err"`
+// Date struct
+type BrDate struct {
+	date       time.Time
+	validation Validation
+	notNull    bool
 }
 
-type documents interface {
-	hasExpectedFormat() Validation
-	isValid() Validation
+type Number struct {
+	number     string
+	validation Validation
+}
+
+type document interface {
+	hasExpectedFormat() bool
+	isValid() bool
 }

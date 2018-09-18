@@ -8,56 +8,85 @@ import (
 )
 
 func main() {
-	var validation brazil.Validation
-
 	// ------------------------------------------------------------------------------------------------
+
+	// Creates a new CPF struct
+	var cpf brazil.CPF
 
 	// Generates a new CPF number in the string format XXX.XXX.XXX-XX
-	newCPF := brazil.GenerateCPF()
+	cpfNumber := brazil.RandomCPFNumber()
 
-	// Parses CPF number into a cpf struct
-	cpf := brazil.ParseCPF(newCPF)
+	// Sets cpf number
+	cpf.SetNumber(cpfNumber)
 
-	// Evaluates a cpf struct number and returns a valid status and a reason in case this status equals false
-	validation = brazil.EvaluateCPF(cpf)
-	log.Println(fmt.Sprintf("%+v", validation))
+	// Returns true if the CPF struct input is valid
+	log.Println(fmt.Sprintf("%+v", cpf.IsValid()))
+
+	// Returns all errors associated to the CPF struct
+	log.Println(fmt.Sprintf("%+v", cpf.Errors()))
 
 	// ------------------------------------------------------------------------------------------------
+
+	// Creates a new PIS struct
+	var pis brazil.PIS
 
 	// Generates a new PIS number in the string format XXX.XXXXX.XX-X
-	newPIS := brazil.GeneratePIS()
+	pisNumber := brazil.RandomPISNumber()
 
-	// Parses CPF number into a cpf struct
-	pis := brazil.ParsePIS(newPIS)
+	// Sets pis number
+	pis.SetNumber(pisNumber)
 
-	// Evaluates a cpf struct number and returns a valid status and a reason in case this status equals false
-	validation = brazil.EvaluatePIS(pis)
-	log.Println(fmt.Sprintf("%+v", validation))
+	// Returns true if the PIS struct input is valid
+	log.Println(fmt.Sprintf("%+v", pis.IsValid()))
 
-	// ------------------------------------------------------------------------------------------------
-
-	// Generates a new Título de Eleitor number in the string format XXXXXXXXXXXX
-	newTitulo := brazil.GenerateTituloEleitoral()
-
-	// Parses CPF number into a cpf struct
-	titulo := brazil.ParseTituloEleitoral(newTitulo)
-
-	// Evaluates a tituloEleitoral struct number and returns a valid status and a reason in case this status equals false
-	validation = brazil.EvaluateTituloEleitoral(titulo)
-	log.Println(fmt.Sprintf("%+v", validation))
+	// Returns all errors associated to the PIS struct
+	log.Println(fmt.Sprintf("%+v", pis.Errors()))
 
 	// ------------------------------------------------------------------------------------------------
 
-	// Generates a new date inside of a chosen range of years in the string format DD/MM/YYYY
-	newDate := brazil.GenerateRandomDate(0, 9999)
+	// Creates a new TituloEleitoral struct
+	var titulo brazil.TituloEleitoral
+	var erros []error
+	var valid bool
 
-	// Parses date into a brDate struct
-	date := brazil.ParseDate(newDate)
+	for len(titulo.Errors()) == 0 {
+		// Generates a new Título Eleitoral number in the string format XXXXXXXXXXXX
+		tituloNumber := brazil.RandomTituloEleitoralNumber()
+
+		// Sets titulo eleitoral number
+		titulo.Number(tituloNumber)
+
+		valid = titulo.IsValid()
+		erros = titulo.Errors()
+		fmt.Println(erros)
+	}
+
+	log.Println(fmt.Sprintf("%+v", titulo.GetNumber()))
+
+	// Returns true if the TituloEleitoral struct input is valid
+	log.Println(fmt.Sprintf("%+v", valid))
+
+	// Returns all errors associated to the TituloEleitoral struct
+	log.Println(fmt.Sprintf("%+v", erros))
+
+	// ------------------------------------------------------------------------------------------------
+
+	var date brazil.BrDate
+
+	// Generates a new time.Time date inside of a chosen range of years
+	newDate := brazil.RandomDate(0, 9999)
+
+	// Sets date
+	date.SetDate(newDate)
+	log.Println(date.GetDate())
 
 	// Validators - return true when their condition is matched
 	log.Println(date.IsFuture())
 	log.Println(date.IsToday())
 	log.Println(date.IsPast())
+
+	// Returns true if year input is a leap year
+	log.Println(brazil.IsLeapYear(newDate.Year()))
 
 	// ------------------------------------------------------------------------------------------------
 }
