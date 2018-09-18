@@ -8,6 +8,14 @@ import (
 	"time"
 )
 
+func NewPIS(number string) PIS {
+	return PIS{
+		number: Number{
+			number: number,
+		},
+	}
+}
+
 func (p *PIS) SetNumber(n string) {
 	p.number.number = n
 	p.number.validation = Validation{}

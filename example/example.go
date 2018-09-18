@@ -27,14 +27,11 @@ func main() {
 
 	// ------------------------------------------------------------------------------------------------
 
-	// Creates a new PIS struct
-	var pis brazil.PIS
-
 	// Generates a new PIS number in the string format XXX.XXXXX.XX-X
 	pisNumber := brazil.RandomPISNumber()
 
 	// Sets pis number
-	pis.SetNumber(pisNumber)
+	pis := brazil.NewPIS(pisNumber)
 
 	// Returns true if the PIS struct input is valid
 	log.Println(fmt.Sprintf("%+v", pis.IsValid()))
