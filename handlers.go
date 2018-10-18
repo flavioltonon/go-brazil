@@ -28,6 +28,12 @@ type PIS struct {
 	valid        bool
 }
 
+type Phone struct {
+	countryCode Number
+	areaCode    Number
+	number      Number
+}
+
 // Date struct
 type BrDate struct {
 	date       time.Time

@@ -11,6 +11,19 @@ func main() {
 	// ------------------------------------------------------------------------------------------------
 
 	// Creates a new CPF struct
+	phoneNumber := brazil.ParsePhoneNumber("+5511974792621")
+
+	countryCode := phoneNumber.CountryCode()
+
+	areaCode := phoneNumber.AreaCode()
+
+	number := phoneNumber.Number()
+
+	log.Println(countryCode + "\n" + areaCode + "\n" + number)
+
+	// ------------------------------------------------------------------------------------------------
+
+	// Creates a new CPF struct
 	var cpf brazil.CPF
 
 	// Generates a new CPF number in the string format XXX.XXX.XXX-XX
