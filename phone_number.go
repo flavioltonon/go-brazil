@@ -4,19 +4,19 @@ import (
 	"regexp"
 )
 
-func ParseBrPhoneNumber(phoneNumber string) Phone {
+func ParsePhoneNumber(phoneNumber string) Phone {
 	var (
 		countryCode, areaCode, number Number
 	)
 
 	phoneNumber = regexp.MustCompile(`[^0-9]`).ReplaceAllString(phoneNumber, "")
 	if len(phoneNumber) == 13 {
-		countryCode.number = phoneNumber[:1]
-		phoneNumber = phoneNumber[1:]
+		countryCode.number = phoneNumber[:2]
+		phoneNumber = phoneNumber[2:]
 	}
 	if len(phoneNumber) == 11 {
-		areaCode.number = phoneNumber[:1]
-		phoneNumber = phoneNumber[1:]
+		areaCode.number = phoneNumber[:2]
+		phoneNumber = phoneNumber[2:]
 	}
 	if len(phoneNumber) == 9 {
 		number.number = phoneNumber

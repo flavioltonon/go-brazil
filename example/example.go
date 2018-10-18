@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	brazil "github.com/flavioltonon/go-brazil"
+	brazil "flavioltonon/go-brazil"
 )
 
 func main() {
