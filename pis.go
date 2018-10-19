@@ -8,53 +8,41 @@ import (
 	"time"
 )
 
-func NewPIS(number string) PIS {
-	return PIS{
-		number: Number{
-			number: number,
-		},
+func ParsePIS(n string) pis {
+	var p number
+	p.number = n
+	return pis{
+		number: p,
 	}
 }
 
-func (p *PIS) SetNumber(n string) {
-	p.number.number = n
-	p.number.validation = Validation{}
-	p.valid = false
+func (p pis) Number() string {
+	return p.number.number
 }
 
-func (p *PIS) SetRegistration(r BrDate) {
-	p.registration = r
-	p.registration.validation = Validation{}
-	p.valid = false
-}
-
-func (p *PIS) IsValid() bool {
+func (p *pis) IsValid() bool {
 	p.number.validation = p.numberIsValid()
-	p.registration.validation = p.dateIsValid()
-	if p.number.validation.Valid && p.registration.validation.Valid {
+	if p.number.validation.valid {
 		p.valid = true
 		return true
 	}
 	return false
 }
 
-func (p *PIS) Errors() []error {
+func (p *pis) Errors() []error {
 	var errors []error
 
 	if p.valid {
 		return nil
 	}
-	if !p.number.validation.Valid {
-		errors = append(errors, p.number.validation.Reason)
-	}
-	if !p.registration.validation.Valid {
-		errors = append(errors, p.registration.validation.Reason)
+	if !p.number.validation.valid {
+		errors = append(errors, p.number.validation.reason)
 	}
 
 	return errors
 }
 
-func RandomPISNumber() string {
+func RandomPIS() string {
 	var i, sum int
 	var multipliers = []int{3, 2, 9, 8, 7, 6, 5, 4, 3, 2}
 
@@ -90,11 +78,11 @@ func RandomPISNumber() string {
 	}, "")
 }
 
-func (p PIS) numberIsValid() Validation {
+func (p pis) numberIsValid() validation {
 	if p.number.number == "" {
-		return Validation{
-			Valid:  false,
-			Reason: errFieldNumberIsRequired,
+		return validation{
+			valid:  false,
+			reason: errFieldNumberIsRequired,
 		}
 	}
 
@@ -102,9 +90,9 @@ func (p PIS) numberIsValid() Validation {
 	v1 := regexp.MustCompile(`^[0-9]{11}$`).MatchString(cleanString)
 	v2 := regexp.MustCompile(`^[0-9]{13}$`).MatchString(cleanString)
 	if !v1 && !v2 {
-		return Validation{
-			Valid:  false,
-			Reason: errIncorrectFormatPisNumber,
+		return validation{
+			valid:  false,
+			reason: errIncorrectFormatPisNumber,
 		}
 	}
 
@@ -116,9 +104,9 @@ func (p PIS) numberIsValid() Validation {
 	// False positives
 	numbers, _ := strconv.Atoi(cleanString)
 	if numbers == 0 {
-		return Validation{
-			Valid:  false,
-			Reason: errInvalidPisNumber,
+		return validation{
+			valid:  false,
+			reason: errInvalidPisNumber,
 		}
 	}
 
@@ -137,35 +125,14 @@ func (p PIS) numberIsValid() Validation {
 		break
 	}
 	if digit != onlyDigit {
-		return Validation{
-			Valid:  false,
-			Reason: errInvalidPisNumber,
+		return validation{
+			valid:  false,
+			reason: errInvalidPisNumber,
 		}
 	}
 
-	return Validation{
-		Valid:  true,
-		Reason: errValidPisNumber,
-	}
-}
-
-func (p PIS) dateIsValid() Validation {
-	if !p.registration.notNull {
-		return Validation{
-			Valid:  true,
-			Reason: errFieldDateNotRequired,
-		}
-	}
-
-	if !p.registration.IsValid() {
-		return Validation{
-			Valid:  false,
-			Reason: errIncorrectFormatDate,
-		}
-	}
-
-	return Validation{
-		Valid:  true,
-		Reason: errValidDate,
+	return validation{
+		valid:  true,
+		reason: errValidPisNumber,
 	}
 }

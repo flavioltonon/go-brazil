@@ -21,4 +21,6 @@ var (
 	errInvalidDate                          = errors.New("Date input is not valid.")
 	errValidDate                            = errors.New("Date input is valid.")
 	errNullDate                             = errors.New("Date has not been input.")
+	errIncorrectFormatPhoneNumber           = errors.New("Phone format input is different than expected. Expected formats: XXXXXXXXXXXXX, +XX(XX)XXXXX-XXXX, (XX)XXXXX-XXXX, etc")
+	errFieldFullNumberIsRequired            = errors.New("Field 'fullNumber' is required.")
 )

@@ -3,50 +3,50 @@ package brazil
 import "time"
 
 // CPF struct
-type CPF struct {
-	number    Number
-	fullName  string
-	birthdate BrDate
-	valid     bool
+type cpf struct {
+	number number
+	valid  bool
 }
 
 // Título de eleitor struct
-type TituloEleitoral struct {
-	number    Number
-	zone      string
-	section   string
-	state     string
-	city      string
-	issueDate BrDate
-	valid     bool
+type tituloEleitoral struct {
+	number number
+	valid  bool
 }
 
 // PIS struct
-type PIS struct {
-	number       Number
-	registration BrDate
-	valid        bool
+type pis struct {
+	number number
+	valid  bool
 }
 
-type Phone struct {
-	countryCode Number
-	areaCode    Number
-	number      Number
+// Phone struct
+type phone struct {
+	fullNumber  number
+	countryCode string
+	areaCode    string
+	number      string
+	valid       bool
+}
+
+type number struct {
+	number     string
+	validation validation
+}
+
+type validation struct {
+	valid  bool
+	reason error
 }
 
 // Date struct
-type BrDate struct {
+type date struct {
 	date       time.Time
-	validation Validation
+	validation validation
 	notNull    bool
-}
-
-type Number struct {
-	number     string
-	validation Validation
 }
 
 type document interface {
 	hasExpectedFormat() bool
-	isValid() bool
+	isvalid() bool
 }

@@ -22,46 +22,46 @@ var days = map[string]int32{
 	"12": 31,
 }
 
-func (d *BrDate) SetDate(date time.Time) {
-	d.date = date
-	d.validation = Validation{}
-	d.notNull = true
+func ParseDate(d time.Time) date {
+	return date{
+		date: d,
+	}
 }
 
-func (d *BrDate) GetDate() string {
+func (d *date) Date() string {
 	return d.date.Format("02/01/2006")
 }
 
-func (d *BrDate) IsValid() bool {
+func (d *date) IsValid() bool {
 	if !d.notNull {
-		d.validation = Validation{
-			Valid:  false,
-			Reason: errNullDate,
+		d.validation = validation{
+			valid:  false,
+			reason: errNullDate,
 		}
 		return false
 	}
 
 	if d.date.IsZero() {
-		d.validation = Validation{
-			Valid:  false,
-			Reason: errIncorrectFormatDate,
+		d.validation = validation{
+			valid:  false,
+			reason: errIncorrectFormatDate,
 		}
 		return false
 	}
 
-	d.validation = Validation{
-		Valid:  true,
-		Reason: nil,
+	d.validation = validation{
+		valid:  true,
+		reason: nil,
 	}
 	return true
 }
 
-func (d *BrDate) Errors() []error {
-	if d.validation.Valid {
+func (d *date) Errors() []error {
+	if d.validation.valid {
 		return nil
 	}
 	return []error{
-		d.validation.Reason,
+		d.validation.reason,
 	}
 }
 
@@ -96,7 +96,7 @@ func IsLeapYear(year int) bool {
 		year%400 == 0
 }
 
-func (d BrDate) IsPast() bool {
+func (d date) IsPast() bool {
 	_, offset := d.date.Zone()
 	date := d.date.Add(time.Duration(offset) * time.Second).UTC().Truncate(24 * time.Hour)
 	if date.IsZero() {
@@ -107,7 +107,7 @@ func (d BrDate) IsPast() bool {
 	return int(today.Sub(date).Hours()/24) > 0
 }
 
-func (d *BrDate) IsToday() bool {
+func (d *date) IsToday() bool {
 	_, offset := d.date.Zone()
 	date := d.date.Add(time.Duration(offset) * time.Second).UTC().Truncate(24 * time.Hour)
 	if date.IsZero() {
@@ -118,7 +118,7 @@ func (d *BrDate) IsToday() bool {
 	return int((today.Sub(date).Hours())/24) == 0
 }
 
-func (d *BrDate) IsFuture() bool {
+func (d *date) IsFuture() bool {
 	_, offset := d.date.Zone()
 	date := d.date.Add(time.Duration(offset) * time.Second).UTC().Truncate(24 * time.Hour)
 	if date.IsZero() {

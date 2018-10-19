@@ -1,61 +1,126 @@
 package brazil
 
 import (
+	"math/rand"
 	"regexp"
+	"strconv"
+	"strings"
+	"time"
 )
 
-func ParsePhoneNumber(phoneNumber string) Phone {
+var areaCodes = []int{11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 24, 27, 28, 31, 32, 33, 34, 35, 37, 38, 41, 42, 43, 44, 45, 46, 47, 48, 49, 51, 53, 54, 55, 61, 62, 63, 64, 65, 66, 67, 68, 69, 71, 73, 74, 75, 77, 79, 81, 82, 83, 84, 85, 86, 87, 88, 89, 91, 92, 93, 94, 95, 96, 97, 98, 99}
+
+func ParsePhoneNumber(phoneNumber string) phone {
 	var (
-		countryCode, areaCode, number Number
+		fullNumber                    number
+		countryCode, areaCode, number string
 	)
 
+	fullNumber.number = phoneNumber
+
 	phoneNumber = regexp.MustCompile(`[^0-9]`).ReplaceAllString(phoneNumber, "")
+
 	if len(phoneNumber) == 13 {
-		countryCode.number = phoneNumber[:2]
+		countryCode = phoneNumber[:2]
 		phoneNumber = phoneNumber[2:]
 	}
 	if len(phoneNumber) == 11 {
-		areaCode.number = phoneNumber[:2]
+		areaCode = phoneNumber[:2]
 		phoneNumber = phoneNumber[2:]
 	}
 	if len(phoneNumber) == 9 {
-		number.number = phoneNumber
+		number = phoneNumber
 	}
-	return Phone{
+	return phone{
+		fullNumber:  fullNumber,
 		countryCode: countryCode,
 		areaCode:    areaCode,
 		number:      number,
 	}
 }
 
-func (p Phone) CountryCode() string {
-	return p.countryCode.number
+func (p phone) FullNumber() string {
+	return p.fullNumber.number
 }
 
-func (p Phone) AreaCode() string {
-	return p.areaCode.number
+func (p phone) CountryCode() string {
+	return p.countryCode
 }
 
-func (p Phone) Number() string {
-	return p.number.number
+func (p phone) AreaCode() string {
+	return p.areaCode
 }
 
-func (p *Phone) IsValid() bool {
+func (p phone) Number() string {
+	return p.number
+}
+
+func (p *phone) IsValid() bool {
+	p.fullNumber.validation = p.numberIsValid()
+	if p.fullNumber.validation.valid {
+		p.valid = true
+		return true
+	}
 	return false
 }
 
-func (p Phone) Errors() []error {
+func (p phone) Errors() []error {
 	var errors []error
+
+	if p.valid {
+		return nil
+	}
+	if !p.fullNumber.validation.valid {
+		errors = append(errors, p.fullNumber.validation.reason)
+	}
+
 	return errors
 }
 
-func RandomPhoneNumber() string {
-	return ""
+func RandomMobileNumber() string {
+	source := rand.NewSource(time.Now().UnixNano())
+	r := rand.New(source)
+
+	countryCode := "55"
+
+	randomAreaCode := areaCodes[int(r.Int63n(59))]
+	randomAreaCodeStr := strconv.Itoa(randomAreaCode)
+
+	randomNumber := int(r.Int63n(99999999) + 900000000)
+	randomNumberStr := strconv.Itoa(randomNumber)
+
+	return strings.Join([]string{
+		"+",
+		countryCode,
+		"(",
+		randomAreaCodeStr,
+		")",
+		randomNumberStr[:5],
+		"-",
+		randomNumberStr[5:],
+	}, "")
 }
 
-func (p Phone) numberIsValid() Validation {
-	return Validation{
-		Valid:  true,
-		Reason: errValidDate,
+func (p phone) numberIsValid() validation {
+	if p.fullNumber.number == "" {
+		return validation{
+			valid:  false,
+			reason: errFieldFullNumberIsRequired,
+		}
+	}
+
+	v1 := regexp.MustCompile(`^[0-9]{13}$`).MatchString(p.fullNumber.number)
+	v2 := regexp.MustCompile(`^[0-9]{11}$`).MatchString(p.fullNumber.number)
+	v3 := regexp.MustCompile(`^[0-9]{9}$`).MatchString(p.fullNumber.number)
+	if !v1 && !v2 && !v3 {
+		return validation{
+			valid:  false,
+			reason: errIncorrectFormatPhoneNumber,
+		}
+	}
+
+	return validation{
+		valid:  true,
+		reason: errValidDate,
 	}
 }

@@ -10,27 +10,34 @@ import (
 func main() {
 	// ------------------------------------------------------------------------------------------------
 
-	// Creates a new CPF struct
-	phoneNumber := brazil.ParsePhoneNumber("+5511974792621")
+	// Generates a new CPF number in the string format +
+	phoneNumber := brazil.RandomMobileNumber()
 
-	countryCode := phoneNumber.CountryCode()
+	// Creates a new Phone struct
+	mobile := brazil.ParsePhoneNumber(phoneNumber)
 
-	areaCode := phoneNumber.AreaCode()
+	// Returns mobile full number
+	log.Println(mobile.FullNumber())
 
-	number := phoneNumber.Number()
+	// Returns mobile country code
+	log.Println(mobile.CountryCode())
 
-	log.Println(countryCode + "\n" + areaCode + "\n" + number)
+	// Returns mobile area code
+	log.Println(mobile.AreaCode())
+
+	// Returns mobile number
+	log.Println(mobile.Number())
 
 	// ------------------------------------------------------------------------------------------------
 
-	// Creates a new CPF struct
-	var cpf brazil.CPF
-
 	// Generates a new CPF number in the string format XXX.XXX.XXX-XX
-	cpfNumber := brazil.RandomCPFNumber()
+	cpfNumber := brazil.RandomCPF()
 
-	// Sets cpf number
-	cpf.SetNumber(cpfNumber)
+	// Creates a new CPF struct
+	cpf := brazil.ParseCPF(cpfNumber)
+
+	// Returns CPF number
+	log.Println(cpf.Number())
 
 	// Returns true if the CPF struct input is valid
 	log.Println(fmt.Sprintf("%+v", cpf.IsValid()))
@@ -41,10 +48,13 @@ func main() {
 	// ------------------------------------------------------------------------------------------------
 
 	// Generates a new PIS number in the string format XXX.XXXXX.XX-X
-	pisNumber := brazil.RandomPISNumber()
+	pisNumber := brazil.RandomPIS()
 
-	// Sets pis number
-	pis := brazil.NewPIS(pisNumber)
+	// Creates a new PIS struct
+	pis := brazil.ParsePIS(pisNumber)
+
+	// Returns PIS number
+	log.Println(pis.Number())
 
 	// Returns true if the PIS struct input is valid
 	log.Println(fmt.Sprintf("%+v", pis.IsValid()))
@@ -54,41 +64,31 @@ func main() {
 
 	// ------------------------------------------------------------------------------------------------
 
+	// Generates a new Título Eleitoral number in the string format XXXXXXXXXXXX
+	tituloNumber := brazil.RandomTituloEleitoral()
+
 	// Creates a new TituloEleitoral struct
-	var titulo brazil.TituloEleitoral
-	var erros []error
-	var valid bool
+	titulo := brazil.ParseTituloEleitoral(tituloNumber)
 
-	for len(titulo.Errors()) == 0 {
-		// Generates a new Título Eleitoral number in the string format XXXXXXXXXXXX
-		tituloNumber := brazil.RandomTituloEleitoralNumber()
-
-		// Sets titulo eleitoral number
-		titulo.Number(tituloNumber)
-
-		valid = titulo.IsValid()
-		erros = titulo.Errors()
-		fmt.Println(erros)
-	}
-
-	log.Println(fmt.Sprintf("%+v", titulo.GetNumber()))
+	// Returns Titulo Eleitoral number
+	log.Println(titulo.Number())
 
 	// Returns true if the TituloEleitoral struct input is valid
-	log.Println(fmt.Sprintf("%+v", valid))
+	log.Println(fmt.Sprintf("%+v", titulo.IsValid()))
 
 	// Returns all errors associated to the TituloEleitoral struct
-	log.Println(fmt.Sprintf("%+v", erros))
+	log.Println(fmt.Sprintf("%+v", titulo.Errors()))
 
 	// ------------------------------------------------------------------------------------------------
-
-	var date brazil.BrDate
 
 	// Generates a new time.Time date inside of a chosen range of years
 	newDate := brazil.RandomDate(0, 9999)
 
-	// Sets date
-	date.SetDate(newDate)
-	log.Println(date.GetDate())
+	// Creates a new TituloEleitoral struct
+	date := brazil.ParseDate(newDate)
+
+	// Returns date
+	log.Println(date.Date())
 
 	// Validators - return true when their condition is matched
 	log.Println(date.IsFuture())
