@@ -12,8 +12,8 @@ var areaCodes = []int{11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 24, 27, 28, 31
 
 func ParsePhoneNumber(phoneNumber string) phone {
 	var (
-		fullNumber                    number
-		countryCode, areaCode, number string
+		fullNumber            number
+		countryCode, areaCode string
 	)
 
 	fullNumber.number = phoneNumber
@@ -28,14 +28,11 @@ func ParsePhoneNumber(phoneNumber string) phone {
 		areaCode = phoneNumber[:2]
 		phoneNumber = phoneNumber[2:]
 	}
-	if len(phoneNumber) == 9 {
-		number = phoneNumber
-	}
 	return phone{
 		fullNumber:  fullNumber,
 		countryCode: countryCode,
 		areaCode:    areaCode,
-		number:      number,
+		number:      phoneNumber,
 	}
 }
 
