@@ -84,7 +84,7 @@ func main() {
 	// Generates a new time.Time date inside of a chosen range of years
 	newDate := brazil.RandomDate(0, 9999)
 
-	// Creates a new TituloEleitoral struct
+	// Creates a new Date struct
 	date := brazil.ParseDate(newDate)
 
 	// Returns date
@@ -94,6 +94,9 @@ func main() {
 	log.Println(date.IsFuture())
 	log.Println(date.IsToday())
 	log.Println(date.IsPast())
+
+	// Returns true if date is older than the input date object
+	log.Println(date.IsOlderThan(date))
 
 	// Returns true if year input is a leap year
 	log.Println(brazil.IsLeapYear(newDate.Year()))

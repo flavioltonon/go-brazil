@@ -107,6 +107,10 @@ func (d date) IsPast() bool {
 	return int(today.Sub(date).Hours()/24) > 0
 }
 
+func (d date) IsOlderThan(ref date) bool {
+	return ref.date.Sub(d.date).Hours() > 0
+}
+
 func (d *date) IsToday() bool {
 	_, offset := d.date.Zone()
 	date := d.date.Add(time.Duration(offset) * time.Second).UTC().Truncate(24 * time.Hour)
