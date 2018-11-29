@@ -116,7 +116,7 @@ func (p phone) numberIsValid() validation {
 		}
 	}
 
-	v := regexp.MustCompile(`^(?=[0-9])(?:.{9}|.{11}|.{13})$`).MatchString(p.fullNumber.number)
+	v := regexp.MustCompile(`^(\d{9}|^(\d{11}|^(\d{13}))$`).MatchString(p.fullNumber.number)
 	if !v {
 		return validation{
 			valid:  false,

@@ -87,7 +87,7 @@ func (p pis) numberIsValid() validation {
 	}
 
 	cleanString := regexp.MustCompile(`[^0-9]`).ReplaceAllString(p.number.number, "")
-	v := regexp.MustCompile(`^(?=[0-9])(?:.{11}|.{13})$`).MatchString(cleanString)
+	v := regexp.MustCompile(`^(\d{11}|^(\d{13}))$`).MatchString(cleanString)
 	if !v {
 		return validation{
 			valid:  false,

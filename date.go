@@ -24,7 +24,7 @@ var days = map[string]int32{
 
 func ParseDate(d time.Time) date {
 	return date{
-		date: d,
+		date: d.Truncate(24 * time.Hour),
 	}
 }
 
