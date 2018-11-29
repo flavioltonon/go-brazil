@@ -23,13 +23,15 @@ var days = map[string]int32{
 }
 
 func ParseDate(d time.Time) date {
+	_, offset := d.Zone()
 	return date{
-		date: d.Truncate(24 * time.Hour),
+		date: d.Add(time.Duration(offset) * time.Second).UTC(),
 	}
 }
 
 func (d *date) Date() string {
-	return d.date.Format("02/01/2006")
+	loc, _ := time.LoadLocation("Local")
+	return d.date.In(loc).Format("02/01/2006")
 }
 
 func (d *date) IsValid() bool {
@@ -97,8 +99,7 @@ func IsLeapYear(year int) bool {
 }
 
 func (d date) IsPast() bool {
-	_, offset := d.date.Zone()
-	date := d.date.Add(time.Duration(offset) * time.Second).UTC().Truncate(24 * time.Hour)
+	date := d.date.Truncate(24 * time.Hour)
 	if date.IsZero() {
 		return false
 	}
@@ -108,12 +109,11 @@ func (d date) IsPast() bool {
 }
 
 func (d date) IsOlderThan(ref date) bool {
-	return ref.date.Sub(d.date).Hours() > 0
+	return ref.date.Truncate(24*time.Hour).Sub(d.date.Truncate(24*time.Hour)).Hours() > 0
 }
 
 func (d *date) IsToday() bool {
-	_, offset := d.date.Zone()
-	date := d.date.Add(time.Duration(offset) * time.Second).UTC().Truncate(24 * time.Hour)
+	date := d.date.Truncate(24 * time.Hour)
 	if date.IsZero() {
 		return false
 	}
@@ -123,8 +123,7 @@ func (d *date) IsToday() bool {
 }
 
 func (d *date) IsFuture() bool {
-	_, offset := d.date.Zone()
-	date := d.date.Add(time.Duration(offset) * time.Second).UTC().Truncate(24 * time.Hour)
+	date := d.date.Truncate(24 * time.Hour)
 	if date.IsZero() {
 		return false
 	}

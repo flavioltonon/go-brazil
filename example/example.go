@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"time"
 
 	brazil "flavioltonon/go-brazil"
 )
@@ -85,7 +86,7 @@ func main() {
 	newDate := brazil.RandomDate(0, 9999)
 
 	// Creates a new Date struct
-	date := brazil.ParseDate(newDate)
+	date := brazil.ParseDate(time.Now())
 
 	// Returns date
 	log.Println(date.Date())
