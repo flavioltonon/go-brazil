@@ -30,8 +30,7 @@ func ParseDate(d time.Time) date {
 }
 
 func (d *date) Date() string {
-	loc, _ := time.LoadLocation("Local")
-	return d.date.In(loc).Format("02/01/2006")
+	return d.date.Format("02/01/2006")
 }
 
 func (d *date) IsValid() bool {
