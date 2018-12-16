@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	brazil "flavioltonon/go-brazil"
@@ -10,85 +9,109 @@ import (
 func main() {
 	// ------------------------------------------------------------------------------------------------
 
-	// Generates a new CPF number in the string format +
-	phoneNumber := brazil.RandomMobileNumber()
+	// Generates a new string mobile full number
+	mobileFullNumber := brazil.RandomMobileFullNumber(false)
 
-	// Creates a new Phone struct
-	mobile := brazil.ParsePhoneNumber(phoneNumber)
+	// Creates a new mobile struct
+	mobile, err := brazil.ParseMobile(mobileFullNumber)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
 	// Returns mobile full number
-	log.Println(mobile.FullNumber())
+	log.Println(mobile.FullNumber(true))
 
 	// Returns mobile country code
-	log.Println(mobile.CountryCode())
+	log.Println(mobile.CountryCode(false))
 
 	// Returns mobile area code
-	log.Println(mobile.AreaCode())
+	log.Println(mobile.AreaCode(false))
 
 	// Returns mobile number
-	log.Println(mobile.Number())
+	log.Println(mobile.Number(false))
 
 	// ------------------------------------------------------------------------------------------------
 
 	// Generates a new CPF number in the string format XXX.XXX.XXX-XX
-	cpfNumber := brazil.RandomCPF()
+	cpfNumber := brazil.RandomCPFNumber(true)
 
 	// Creates a new CPF struct
-	cpf := brazil.ParseCPF(cpfNumber)
+	cpf, err := brazil.ParseCPF(cpfNumber)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
 	// Returns CPF number
-	log.Println(cpf.Number())
-
-	// Returns true if the CPF struct input is valid
-	log.Println(fmt.Sprintf("%+v", cpf.IsValid()))
-
-	// Returns all errors associated to the CPF struct
-	log.Println(fmt.Sprintf("%+v", cpf.Errors()))
+	log.Println(cpf.Number(true))
 
 	// ------------------------------------------------------------------------------------------------
 
 	// Generates a new PIS number in the string format XXX.XXXXX.XX-X
-	pisNumber := brazil.RandomPIS()
+	pisNumber := brazil.RandomPISNumber(true)
 
 	// Creates a new PIS struct
-	pis := brazil.ParsePIS(pisNumber)
+	pis, err := brazil.ParsePIS(pisNumber)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
 	// Returns PIS number
-	log.Println(pis.Number())
-
-	// Returns true if the PIS struct input is valid
-	log.Println(fmt.Sprintf("%+v", pis.IsValid()))
-
-	// Returns all errors associated to the PIS struct
-	log.Println(fmt.Sprintf("%+v", pis.Errors()))
+	log.Println(pis.Number(true))
 
 	// ------------------------------------------------------------------------------------------------
 
 	// Generates a new Título Eleitoral number in the string format XXXXXXXXXXXX
-	tituloNumber := brazil.RandomTituloEleitoral()
+	tituloEleitoralNumber := brazil.RandomTituloEleitoralNumber(true)
 
 	// Creates a new TituloEleitoral struct
-	titulo := brazil.ParseTituloEleitoral(tituloNumber)
+	titulo, err := brazil.ParseTituloEleitoral(tituloEleitoralNumber)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
 	// Returns Titulo Eleitoral number
-	log.Println(titulo.Number())
+	log.Println(titulo.Number(true))
 
-	// Returns true if the TituloEleitoral struct input is valid
-	log.Println(fmt.Sprintf("%+v", titulo.IsValid()))
+	// ------------------------------------------------------------------------------------------------
 
-	// Returns all errors associated to the TituloEleitoral struct
-	log.Println(fmt.Sprintf("%+v", titulo.Errors()))
+	// Generates a new SUS number in the string format XXXXXXXXXXXX
+	susNumber := brazil.RandomSUSNumber(true)
+
+	// Creates a new SUS struct
+	sus, err := brazil.ParseSUS(susNumber)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	// Returns SUS number
+	log.Println(sus.Number(true))
 
 	// ------------------------------------------------------------------------------------------------
 
 	// Generates a new time.Time date inside of a chosen range of years
-	newDate := brazil.RandomDate(0, 9999)
+	newDate, err := brazil.RandomDate(0, 1000)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
 	// Creates a new Date struct
-	date := brazil.ParseDate(newDate)
+	date, err := brazil.ParseDate(newDate)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
 	// Returns date
 	log.Println(date.Date())
+
+	// Returns time
+	log.Println(date.Time())
 
 	// Validators - return true when their condition is matched
 	log.Println(date.IsFuture())
@@ -99,7 +122,7 @@ func main() {
 	log.Println(date.IsOlderThan(date))
 
 	// Returns true if year input is a leap year
-	log.Println(brazil.IsLeapYear(newDate.Year()))
+	log.Println(brazil.IsLeapYear(date.Year()))
 
 	// ------------------------------------------------------------------------------------------------
 }
