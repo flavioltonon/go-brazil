@@ -4,153 +4,111 @@ import (
 	"math/rand"
 	"regexp"
 	"strconv"
-	"strings"
 	"time"
 )
 
-func ParseCPF(n string) cpf {
-	var c number
-	c.number = n
-	return cpf{
-		number: c,
+// CPF struct
+type cpf struct {
+	number cpfNumber
+}
+
+func (c cpf) Number(mask bool) string {
+	var cNumber = c.number
+
+	if mask {
+		return string(cNumber[:3]) + "." + string(cNumber[3:6]) + "." + string(cNumber[6:9]) + "-" + string(cNumber[9:])
 	}
+	return string(cNumber)
 }
 
-func (c cpf) Number() string {
-	return c.number.number
+func ParseCPF(number string) (cpf, error) {
+	var cNumber cpfNumber
+
+	number = regexp.MustCompile(`[^0-9]`).ReplaceAllString(number, "")
+
+	if len(number) != 11 {
+		return cpf{}, errIncorrectLenghtCpfNumber
+	}
+
+	cNumber = cpfNumber(number)
+
+	if cNumber.isFalsePositive() {
+		return cpf{}, errInvalidCpfNumber
+	}
+
+	if !cNumber.hasValidFirstDigit() {
+		return cpf{}, errInvalidCpfNumber
+	}
+
+	if !cNumber.hasValidSecondDigit() {
+		return cpf{}, errInvalidCpfNumber
+	}
+
+	return cpf{
+		number: cNumber,
+	}, nil
 }
 
-func (c *cpf) IsValid() bool {
-	c.number.validation = c.numberIsValid()
-	if c.number.validation.valid {
-		c.valid = true
+func RandomCPFNumber(mask bool) string {
+	var (
+		source = rand.NewSource(time.Now().UnixNano())
+		sum    int
+	)
+
+	r := rand.New(source)
+	cNumber := int(r.Int31n(899999999) + 100000000)
+	cString := strconv.Itoa(cNumber)
+
+	// Calculate first digit
+	for i := 0; i < 9; i++ {
+		number, _ := strconv.Atoi(string(cString[i]))
+		sum = sum + number*(10-i)
+	}
+	firstDigit := ((sum * 10) % 11) % 10
+
+	// Calculate second digit
+	sum = 0
+	for i := 0; i < 9; i++ {
+		number, _ := strconv.Atoi(string(cString[i]))
+		sum = sum + number*(11-i)
+	}
+	sum = sum + firstDigit*2
+	secondDigit := ((sum * 10) % 11) % 10
+
+	if mask {
+		return cString[:3] + "." + cString[3:6] + "." + cString[6:] + "-" + strconv.Itoa(firstDigit) + strconv.Itoa(secondDigit)
+	}
+	return cString + strconv.Itoa(firstDigit) + strconv.Itoa(secondDigit)
+}
+
+type cpfNumber string
+
+func (c cpfNumber) isFalsePositive() bool {
+	cpf, _ := strconv.Atoi(string(c))
+	if cpf%11111111111 == 0 {
 		return true
 	}
 	return false
 }
 
-func (c cpf) Errors() []error {
-	var errors []error
+func (c cpfNumber) hasValidFirstDigit() bool {
+	var sum int
 
-	if c.valid {
-		return nil
-	}
-	if !c.number.validation.valid {
-		errors = append(errors, c.number.validation.reason)
-	}
-
-	return errors
-}
-
-func RandomCPF() string {
-	var i, sum int
-
-	source := rand.NewSource(time.Now().UnixNano())
-	r := rand.New(source)
-	random := int(r.Int31n(899999999) + 100000000)
-	randomStr := strconv.Itoa(random)
-
-	// First digit
-	sum = 0
-	for i = 0; i < 9; i++ {
-		number, _ := strconv.Atoi(string(randomStr[i]))
-		sum = sum + number*(10-i)
-	}
-	firstDigit := (sum * 10) % 11
-	if firstDigit == 10 {
-		firstDigit = 0
-	}
-
-	// Second digit
-	sum = 0
-	for i = 0; i < 9; i++ {
-		number, _ := strconv.Atoi(string(randomStr[i]))
-		sum = sum + number*(11-i)
-	}
-	sum = sum + firstDigit*2
-	secondDigit := (sum * 10) % 11
-	if secondDigit == 10 {
-		secondDigit = 0
-	}
-
-	return strings.Join([]string{
-		randomStr[:3],
-		".",
-		randomStr[3:6],
-		".",
-		randomStr[6:],
-		"-",
-		strconv.Itoa(firstDigit),
-		strconv.Itoa(secondDigit),
-	}, "")
-}
-
-func (c cpf) numberIsValid() validation {
-	if c.number.number == "" {
-		return validation{
-			valid:  false,
-			reason: errFieldNumberIsRequired,
-		}
-	}
-
-	cleanString := regexp.MustCompile(`[^0-9]`).ReplaceAllString(c.number.number, "")
-	v := regexp.MustCompile(`^[0-9]{11}$`).MatchString(cleanString)
-	if !v {
-		return validation{
-			valid:  false,
-			reason: errIncorrectFormatCpfNumber,
-		}
-	}
-
-	var sum, digit int
-
-	firstDigit, _ := strconv.Atoi(string(cleanString[9]))
-	secondDigit, _ := strconv.Atoi(string(cleanString[10]))
-
-	// False positives
-	numbers, _ := strconv.Atoi(cleanString)
-	if numbers%11111111111 == 0 {
-		return validation{
-			valid:  false,
-			reason: errInvalidCpfNumber,
-		}
-	}
-
-	// First digit validation
 	for i := 0; i < 9; i++ {
-		number, _ := strconv.Atoi(string(cleanString[i]))
-		sum = sum + number*(10-i)
-	}
-	digit = (sum * 10) % 11
-	if digit == 10 {
-		digit = 0
-	}
-	if digit != firstDigit {
-		return validation{
-			valid:  false,
-			reason: errInvalidCpfNumber,
-		}
+		cpfDigit, _ := strconv.Atoi(string(c[i]))
+		sum = sum + cpfDigit*(10-i)
 	}
 
-	// Second digit validation
-	sum = 0
+	return string(c[9]) == strconv.Itoa(((sum*10)%11)%10)
+}
+
+func (c cpfNumber) hasValidSecondDigit() bool {
+	var sum int
+
 	for i := 0; i < 10; i++ {
-		number, _ := strconv.Atoi(string(cleanString[i]))
-		sum = sum + number*(11-i)
-	}
-	digit = (sum * 10) % 11
-	if digit == 10 {
-		digit = 0
-	}
-	if digit != secondDigit {
-		return validation{
-			valid:  false,
-			reason: errInvalidCpfNumber,
-		}
+		cpfDigit, _ := strconv.Atoi(string(c[i]))
+		sum = sum + cpfDigit*(11-i)
 	}
 
-	return validation{
-		valid:  true,
-		reason: errValidCpfNumber,
-	}
+	return string(c[10]) == strconv.Itoa(((sum*10)%11)%10)
 }

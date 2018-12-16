@@ -4,71 +4,78 @@ import (
 	"math/rand"
 	"regexp"
 	"strconv"
-	"strings"
 	"time"
 )
 
-func ParseTituloEleitoral(n string) tituloEleitoral {
-	var t number
-	t.number = n
+// Título de eleitor struct
+type tituloEleitoral struct {
+	number tituloEleitoralNumber
+}
+
+func (t tituloEleitoral) Number(mask bool) string {
+	var tNumber = t.number
+
+	if mask {
+		return string(tNumber[:4]) + " " + string(tNumber[4:8]) + " " + string(tNumber[8:])
+	}
+	return string(tNumber)
+}
+
+type tituloEleitoralNumber string
+
+func ParseTituloEleitoral(number string) (tituloEleitoral, error) {
+	var tNumber tituloEleitoralNumber
+
+	number = regexp.MustCompile(`[^0-9]`).ReplaceAllString(number, "")
+
+	if len(number) != 12 && len(number) != 14 {
+		return tituloEleitoral{}, errIncorrectLenghtTituloEleitoralNumber
+	}
+
+	tNumber = tituloEleitoralNumber(number)
+
+	if tNumber.isFalsePositive() {
+		return tituloEleitoral{}, errInvalidTituloEleitoralNumber
+	}
+
+	if !tNumber.hasValidFirstDigit() {
+		return tituloEleitoral{}, errInvalidTituloEleitoralNumber
+	}
+
+	if !tNumber.hasValidSecondDigit() {
+		return tituloEleitoral{}, errInvalidTituloEleitoralNumber
+	}
+
 	return tituloEleitoral{
-		number: t,
-	}
+		number: tNumber,
+	}, nil
 }
 
-func (t tituloEleitoral) Number() string {
-	return t.number.number
-}
+func RandomTituloEleitoralNumber(mask bool) string {
+	var (
+		source = rand.NewSource(time.Now().UnixNano())
+		sum    int
+	)
 
-func (t *tituloEleitoral) IsValid() bool {
-	t.number.validation = t.numberIsValid()
-	if t.number.validation.valid {
-		t.valid = true
-		return true
-	}
-	return false
-}
-
-func (t *tituloEleitoral) Errors() []error {
-	var errors []error
-
-	if t.valid {
-		return nil
-	}
-	if !t.number.validation.valid {
-		errors = append(errors, t.number.validation.reason)
-	}
-
-	return errors
-}
-
-func RandomTituloEleitoral() string {
-	var i, sum int
-	var digitlessTitulo string
-
-	source := rand.NewSource(time.Now().UnixNano())
 	r := rand.New(source)
-	random := int(r.Int31n(89999999) + 10000000)
-	randomStr := strconv.Itoa(random)
-	stateCode := int(r.Int31n(27) + 1)
-	stateCodeStr := strconv.Itoa(stateCode)
 
+	tNumber := int(r.Int31n(89999999) + 10000000)
+	tString := strconv.Itoa(tNumber)
+
+	stateCode := int(r.Int31n(27) + 1)
+	stateCodeString := strconv.Itoa(stateCode)
 	if stateCode < 10 {
-		digitlessTitulo = randomStr + "0" + stateCodeStr
-	} else {
-		digitlessTitulo = randomStr + stateCodeStr
+		stateCodeString = "0" + stateCodeString
 	}
+
+	digitlessTitulo := tString + stateCodeString
 
 	// First digit
-	sum = 0
-	for i = 0; i < 8; i++ {
+	for i := 0; i < 8; i++ {
 		number, _ := strconv.Atoi(string(digitlessTitulo[i]))
 		sum = sum + number*(i+2)
 	}
 	firstDigit := sum % 11
-	if firstDigit == 10 {
-		firstDigit = 0
-	}
 	if firstDigit == 0 {
 		switch stateCode {
 		case 1:
@@ -85,7 +92,7 @@ func RandomTituloEleitoral() string {
 
 	// Second digit
 	sum = 0
-	for i = 8; i < 10; i++ {
+	for i := 8; i < 10; i++ {
 		number, _ := strconv.Atoi(string(digitlessTitulo[i]))
 		sum = sum + number*(i-1)
 	}
@@ -108,53 +115,30 @@ func RandomTituloEleitoral() string {
 		secondDigit = 0
 	}
 
-	return strings.Join([]string{
-		digitlessTitulo,
-		strconv.Itoa(firstDigit),
-		strconv.Itoa(secondDigit),
-	}, "")
+	if mask {
+		return digitlessTitulo[:4] + " " + digitlessTitulo[4:8] + " " + digitlessTitulo[8:] + strconv.Itoa(firstDigit) + strconv.Itoa(secondDigit)
+	}
+	return digitlessTitulo + strconv.Itoa(firstDigit) + strconv.Itoa(secondDigit)
 }
 
-func (t tituloEleitoral) numberIsValid() validation {
-	if t.number.number == "" {
-		return validation{
-			valid:  false,
-			reason: errFieldNumberIsRequired,
-		}
+func (t tituloEleitoralNumber) isFalsePositive() bool {
+	if string(t) == "000000000000" {
+		return true
 	}
+	return false
 
-	cleanString := regexp.MustCompile(`[^0-9]`).ReplaceAllString(t.number.number, "")
-	v1 := regexp.MustCompile(`^[0-9]{12}$`).MatchString(cleanString)
-	v2 := regexp.MustCompile(`^[0-9]{14}$`).MatchString(cleanString)
-	if !v1 && !v2 {
-		return validation{
-			valid:  false,
-			reason: errIncorrectFormatTituloEleitoralNumber,
-		}
-	}
+}
 
+func (t tituloEleitoralNumber) hasValidFirstDigit() bool {
 	var sum, digit int
 
-	firstDigit, _ := strconv.Atoi(string(cleanString[10]))
-	secondDigit, _ := strconv.Atoi(string(cleanString[11]))
-
-	// False positives
-	numbers, _ := strconv.Atoi(cleanString)
-	if numbers == 0 {
-		return validation{
-			valid:  false,
-			reason: errInvalidTituloEleitoralNumber,
-		}
-	}
-
-	// First digit validation
 	for i := 0; i < 8; i++ {
-		number, _ := strconv.Atoi(string(cleanString[i]))
-		sum = sum + number*(i+2)
+		tituloEleitoralDigit, _ := strconv.Atoi(string(t[i]))
+		sum = sum + tituloEleitoralDigit*(i+2)
 	}
 	digit = sum % 11
 	if digit == 0 {
-		stateCode, _ := strconv.Atoi(string(cleanString[8:10]))
+		stateCode, _ := strconv.Atoi(string(t[8:10]))
 		switch stateCode {
 		case 1:
 			digit = 1
@@ -164,26 +148,20 @@ func (t tituloEleitoral) numberIsValid() validation {
 			break
 		}
 	}
-	if digit == 10 {
-		digit = 0
-	}
 
-	if digit != firstDigit {
-		return validation{
-			valid:  false,
-			reason: errInvalidTituloEleitoralNumber,
-		}
-	}
+	return string(t[10]) == strconv.Itoa(digit%10) || string(t[10]) == strconv.Itoa(digit)
+}
 
-	// Second digit validation
-	sum = 0
+func (t tituloEleitoralNumber) hasValidSecondDigit() bool {
+	var sum, digit int
+
 	for i := 8; i < 11; i++ {
-		number, _ := strconv.Atoi(string(cleanString[i]))
-		sum = sum + number*(i-1)
+		tituloEleitoralDigit, _ := strconv.Atoi(string(t[i]))
+		sum = sum + tituloEleitoralDigit*(i-1)
 	}
 	digit = sum % 11
 	if digit == 0 {
-		stateCode, _ := strconv.Atoi(string(cleanString[8:10]))
+		stateCode, _ := strconv.Atoi(string(t[8:10]))
 		switch stateCode {
 		case 1:
 			digit = 1
@@ -193,19 +171,6 @@ func (t tituloEleitoral) numberIsValid() validation {
 			break
 		}
 	}
-	if digit == 10 {
-		digit = 0
-	}
 
-	if digit != secondDigit {
-		return validation{
-			valid:  false,
-			reason: errInvalidTituloEleitoralNumber,
-		}
-	}
-
-	return validation{
-		valid:  true,
-		reason: errValidTituloEleitoralNumber,
-	}
+	return string(t[11]) == strconv.Itoa(digit%10) || string(t[11]) == strconv.Itoa(digit)
 }

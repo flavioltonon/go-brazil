@@ -4,134 +4,92 @@ import (
 	"math/rand"
 	"regexp"
 	"strconv"
-	"strings"
 	"time"
 )
 
-func ParsePIS(n string) pis {
-	var p number
-	p.number = n
-	return pis{
-		number: p,
+// PIS struct
+type pis struct {
+	number pisNumber
+}
+
+func (p pis) Number(mask bool) string {
+	var pNumber = p.number
+
+	if mask {
+		return string(pNumber[:3]) + "." + string(pNumber[3:8]) + "." + string(pNumber[8:10]) + "-" + string(pNumber[10:])
 	}
+	return string(pNumber)
 }
 
-func (p pis) Number() string {
-	return p.number.number
+func ParsePIS(number string) (pis, error) {
+	var pNumber pisNumber
+
+	number = regexp.MustCompile(`[^0-9]`).ReplaceAllString(number, "")
+
+	if len(number) != 11 && len(number) != 13 {
+		return pis{}, errIncorrectLenghtPisNumber
+	}
+
+	pNumber = pisNumber(number)
+
+	if pNumber.isFalsePositive() {
+		return pis{}, errInvalidPisNumber
+	}
+
+	if !pNumber.hasValidDigit() {
+		return pis{}, errInvalidPisNumber
+	}
+
+	return pis{
+		number: pNumber,
+	}, nil
 }
 
-func (p *pis) IsValid() bool {
-	p.number.validation = p.numberIsValid()
-	if p.number.validation.valid {
-		p.valid = true
+func RandomPISNumber(mask bool) string {
+	var (
+		source      = rand.NewSource(time.Now().UnixNano())
+		multipliers = []int{3, 2, 9, 8, 7, 6, 5, 4, 3, 2}
+		sum         int
+	)
+
+	r := rand.New(source)
+	pNumber := int(r.Int63n(8999999999) + 1000000000)
+	pString := strconv.Itoa(pNumber)
+
+	for i := 0; i < 10; i++ {
+		number, _ := strconv.Atoi(string(pString[i]))
+		sum = sum + number*multipliers[i]
+	}
+	digit := 11 - sum%11
+	if digit >= 10 {
+		digit = 0
+	}
+
+	if mask {
+		return pString[:3] + "." + pString[3:8] + "." + pString[8:] + "-" + strconv.Itoa(digit)
+	}
+	return pString + strconv.Itoa(digit)
+}
+
+type pisNumber string
+
+func (p pisNumber) isFalsePositive() bool {
+	if string(p) == "00000000000" {
 		return true
 	}
 	return false
 }
 
-func (p *pis) Errors() []error {
-	var errors []error
+func (p pisNumber) hasValidDigit() bool {
+	var (
+		multipliers = []int{3, 2, 9, 8, 7, 6, 5, 4, 3, 2}
+		sum         int
+	)
 
-	if p.valid {
-		return nil
-	}
-	if !p.number.validation.valid {
-		errors = append(errors, p.number.validation.reason)
-	}
-
-	return errors
-}
-
-func RandomPIS() string {
-	var i, sum int
-	var multipliers = []int{3, 2, 9, 8, 7, 6, 5, 4, 3, 2}
-
-	source := rand.NewSource(time.Now().UnixNano())
-	r := rand.New(source)
-	random := int(r.Int63n(8999999999) + 1000000000)
-	randomStr := strconv.Itoa(random)
-
-	// Only digit
-	sum = 0
-	for i = 0; i < 10; i++ {
-		number, _ := strconv.Atoi(string(randomStr[i]))
-		sum = sum + number*multipliers[i]
-	}
-	onlyDigit := 11 - sum%11
-	switch onlyDigit {
-	case 10:
-		onlyDigit = 0
-		break
-	case 11:
-		onlyDigit = 0
-		break
-	}
-
-	return strings.Join([]string{
-		randomStr[:3],
-		".",
-		randomStr[3:8],
-		".",
-		randomStr[8:],
-		"-",
-		strconv.Itoa(onlyDigit),
-	}, "")
-}
-
-func (p pis) numberIsValid() validation {
-	if p.number.number == "" {
-		return validation{
-			valid:  false,
-			reason: errFieldNumberIsRequired,
-		}
-	}
-
-	cleanString := regexp.MustCompile(`[^0-9]`).ReplaceAllString(p.number.number, "")
-	v := regexp.MustCompile(`^(\d{11}|^(\d{13}))$`).MatchString(cleanString)
-	if !v {
-		return validation{
-			valid:  false,
-			reason: errIncorrectFormatPisNumber,
-		}
-	}
-
-	var sum, digit int
-	var multipliers = []int{3, 2, 9, 8, 7, 6, 5, 4, 3, 2}
-
-	onlyDigit, _ := strconv.Atoi(string(cleanString[10]))
-
-	// False positives
-	numbers, _ := strconv.Atoi(cleanString)
-	if numbers == 0 {
-		return validation{
-			valid:  false,
-			reason: errInvalidPisNumber,
-		}
-	}
-
-	// Only digit validation
 	for i := 0; i < 10; i++ {
-		number, _ := strconv.Atoi(string(cleanString[i]))
-		sum = sum + number*multipliers[i]
-	}
-	digit = 11 - sum%11
-	switch digit {
-	case 10:
-		digit = 0
-		break
-	case 11:
-		digit = 0
-		break
-	}
-	if digit != onlyDigit {
-		return validation{
-			valid:  false,
-			reason: errInvalidPisNumber,
-		}
+		pisDigit, _ := strconv.Atoi(string(p[i]))
+		sum = sum + pisDigit*multipliers[i]
 	}
 
-	return validation{
-		valid:  true,
-		reason: errValidPisNumber,
-	}
+	return string(p[10]) == strconv.Itoa((11-sum%11)%10) || string(p[10]) == strconv.Itoa((11-sum%11)%11)
 }
