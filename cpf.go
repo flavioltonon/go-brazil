@@ -62,7 +62,7 @@ func RandomCPFNumber(mask bool) string {
 	// Calculate first digit
 	for i := 0; i < 9; i++ {
 		number, _ := strconv.Atoi(string(cString[i]))
-		sum = sum + number*(10-i)
+		sum += number * (10 - i)
 	}
 	firstDigit := ((sum * 10) % 11) % 10
 
@@ -70,9 +70,9 @@ func RandomCPFNumber(mask bool) string {
 	sum = 0
 	for i := 0; i < 9; i++ {
 		number, _ := strconv.Atoi(string(cString[i]))
-		sum = sum + number*(11-i)
+		sum += number * (11 - i)
 	}
-	sum = sum + firstDigit*2
+	sum += firstDigit * 2
 	secondDigit := ((sum * 10) % 11) % 10
 
 	if mask {
@@ -96,7 +96,7 @@ func (c cpfNumber) hasValidFirstDigit() bool {
 
 	for i := 0; i < 9; i++ {
 		cpfDigit, _ := strconv.Atoi(string(c[i]))
-		sum = sum + cpfDigit*(10-i)
+		sum += cpfDigit * (10 - i)
 	}
 
 	return string(c[9]) == strconv.Itoa(((sum*10)%11)%10)
@@ -107,7 +107,7 @@ func (c cpfNumber) hasValidSecondDigit() bool {
 
 	for i := 0; i < 10; i++ {
 		cpfDigit, _ := strconv.Atoi(string(c[i]))
-		sum = sum + cpfDigit*(11-i)
+		sum += cpfDigit * (11 - i)
 	}
 
 	return string(c[10]) == strconv.Itoa(((sum*10)%11)%10)

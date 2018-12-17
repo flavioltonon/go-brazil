@@ -73,7 +73,7 @@ func RandomTituloEleitoralNumber(mask bool) string {
 	// First digit
 	for i := 0; i < 8; i++ {
 		number, _ := strconv.Atoi(string(digitlessTitulo[i]))
-		sum = sum + number*(i+2)
+		sum += number * (i + 2)
 	}
 	firstDigit := sum % 11
 	if firstDigit == 0 {
@@ -94,7 +94,7 @@ func RandomTituloEleitoralNumber(mask bool) string {
 	sum = 0
 	for i := 8; i < 10; i++ {
 		number, _ := strconv.Atoi(string(digitlessTitulo[i]))
-		sum = sum + number*(i-1)
+		sum += number * (i - 1)
 	}
 	sum = sum + firstDigit*9
 	secondDigit := sum % 11
@@ -134,7 +134,7 @@ func (t tituloEleitoralNumber) hasValidFirstDigit() bool {
 
 	for i := 0; i < 8; i++ {
 		tituloEleitoralDigit, _ := strconv.Atoi(string(t[i]))
-		sum = sum + tituloEleitoralDigit*(i+2)
+		sum += tituloEleitoralDigit * (i + 2)
 	}
 	digit = sum % 11
 	if digit == 0 {
@@ -157,7 +157,7 @@ func (t tituloEleitoralNumber) hasValidSecondDigit() bool {
 
 	for i := 8; i < 11; i++ {
 		tituloEleitoralDigit, _ := strconv.Atoi(string(t[i]))
-		sum = sum + tituloEleitoralDigit*(i-1)
+		sum += tituloEleitoralDigit * (i - 1)
 	}
 	digit = sum % 11
 	if digit == 0 {

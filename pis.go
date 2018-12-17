@@ -58,7 +58,7 @@ func RandomPISNumber(mask bool) string {
 
 	for i := 0; i < 10; i++ {
 		number, _ := strconv.Atoi(string(pString[i]))
-		sum = sum + number*multipliers[i]
+		sum += number * multipliers[i]
 	}
 	digit := 11 - sum%11
 	if digit >= 10 {
@@ -88,7 +88,7 @@ func (p pisNumber) hasValidDigit() bool {
 
 	for i := 0; i < 10; i++ {
 		pisDigit, _ := strconv.Atoi(string(p[i]))
-		sum = sum + pisDigit*multipliers[i]
+		sum += pisDigit * multipliers[i]
 	}
 
 	return string(p[10]) == strconv.Itoa((11-sum%11)%10) || string(p[10]) == strconv.Itoa((11-sum%11)%11)
