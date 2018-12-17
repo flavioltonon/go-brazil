@@ -17,5 +17,7 @@ Here are the documents/patterns which have been contemplated so far:
 - **Título de Eleitor**
 - **PIS**
 - **Date**
+- **SUS**
+- **Mobile numbers**
 
  Some usage examples can be found at example/example.go.
