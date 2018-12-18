@@ -31,10 +31,6 @@ func ParseSUS(number string) (sus, error) {
 
 	sNumber = susNumber(number)
 
-	if sNumber.isFalsePositive() {
-		return sus{}, errInvalidSusNumber
-	}
-
 	if !sNumber.isValid() {
 		return sus{}, errInvalidSusNumber
 	}
@@ -47,69 +43,72 @@ func ParseSUS(number string) (sus, error) {
 func RandomSUSNumber(mask bool) string {
 	var (
 		source               = rand.NewSource(time.Now().UnixNano())
-		possibleFirstNumbers = []int{1, 2, 7, 8, 9}
+		possibleFirstNumbers = []string{"1", "2", "7", "8", "9"}
+		susNumber            string
 		numbers              string
+		sum                  int
 	)
 
 	r := rand.New(source)
 
 	firstNumber := possibleFirstNumbers[r.Int31n(4)]
-	firstNumberString := strconv.Itoa(firstNumber)
-	if firstNumber == 1 || firstNumber == 2 {
-		numbers = strconv.FormatInt(r.Int63n(8999999999)+1000000000, 10) + "00"
-	} else {
-		numbers = strconv.FormatInt(r.Int63n(899999999999)+100000000000, 10)
-	}
-
-	sum := firstNumber * 15
-	for i := 0; i < 12; i++ {
-		number, _ := strconv.Atoi(string(numbers[i]))
-		sum += number * (14 - i)
-	}
-	remainder := sum % 11
-
-	penultimate := 0
-	ultimate := remainder
-
-	if remainder%11 > 0 {
-		penultimate = 0
-		ultimate = 11 - remainder
-		if (11 - remainder) == 10 {
-			penultimate = 1
-			ultimate = 11 - (sum+2*penultimate)%11
-			if (sum+2*penultimate)%11 == 0 {
-				ultimate = 0
-			}
+	switch firstNumber {
+	case "1", "2":
+		numbers = firstNumber + strconv.FormatInt(r.Int63n(8999999999)+1000000000, 10)
+		for i := 0; i < 11; i++ {
+			susDigit, _ := strconv.Atoi(string(numbers[i]))
+			sum += susDigit * (15 - i)
+		}
+		if sum%11 == 1 {
+			susNumber = numbers + "001" + strconv.Itoa(11-(sum+2)%11)
+		} else {
+			susNumber = numbers + "000" + strconv.Itoa((11-sum%11)%11)
+		}
+	case "7", "8", "9":
+		numbers = firstNumber + strconv.FormatInt(r.Int63n(899999999999)+100000000000, 10)
+		for i := 0; i < 13; i++ {
+			susDigit, _ := strconv.Atoi(string(numbers[i]))
+			sum += susDigit * (15 - i)
+		}
+		if sum%11 == 1 {
+			susNumber = numbers + "1" + strconv.Itoa(11-(sum+2)%11)
+		} else {
+			susNumber = numbers + "0" + strconv.Itoa((11-sum%11)%11)
 		}
 	}
 
-	pString := strconv.Itoa(penultimate)
-	uString := strconv.Itoa(ultimate)
-
-	sString := firstNumberString + numbers + pString + uString
 	if mask {
-		return sString[:3] + " " + sString[3:7] + " " + sString[7:11] + " " + sString[11:]
+		return susNumber[:3] + " " + susNumber[3:7] + " " + susNumber[7:11] + " " + susNumber[11:]
 	}
-	return sString
+	return susNumber
 }
 
 type susNumber string
 
-func (s susNumber) isFalsePositive() bool {
-	var regex = regexp.MustCompile(`(^[1-2]\d{10}00[0-1]\d{1}$)|(^[7-9]\d{14}$)`)
-	if regex.MatchString(string(s)) {
-		return false
-	}
-	return true
-}
-
 func (s susNumber) isValid() bool {
 	var sum int
 
-	for i := 0; i < 15; i++ {
-		susDigit, _ := strconv.Atoi(string(s[i]))
-		sum += susDigit * (15 - i)
+	if !regexp.MustCompile(`(^[1-2]\d{10}00[0-1]\d{1}$)|(^[7-9]\d{14}$)`).MatchString(string(s)) {
+		return false
 	}
 
-	return sum%11 == 0
+	switch string(s[0]) {
+	case "1", "2":
+		for i := 0; i < 11; i++ {
+			susDigit, _ := strconv.Atoi(string(s[i]))
+			sum += susDigit * (15 - i)
+		}
+		if sum%11 == 1 {
+			return string(s[11:15]) == "001"+strconv.Itoa(11-(sum+2)%11)
+		}
+		return string(s[11:15]) == "000"+strconv.Itoa((11-sum%11)%11)
+	case "7", "8", "9":
+		for i := 0; i < 15; i++ {
+			susDigit, _ := strconv.Atoi(string(s[i]))
+			sum += susDigit * (15 - i)
+		}
+		return sum%11 == 0
+	default:
+		return false
+	}
 }
