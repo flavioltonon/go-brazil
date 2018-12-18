@@ -6,7 +6,7 @@ var (
 	errIncorrectLenghtCpfNumber = errors.New("CPF numbers must contain 11 numbers")
 	errInvalidCpfNumber         = errors.New("CPF number input is not valid")
 
-	errIncorrectLenghtTituloEleitoralNumber = errors.New("CPF numbers must contain 12 or 14 numbers")
+	errIncorrectLenghtTituloEleitoralNumber = errors.New("Título de eleitor numbers must contain 12 numbers")
 	errInvalidTituloEleitoralNumber         = errors.New("Título de eleitor number input is not valid")
 
 	errIncorrectLenghtPisNumber = errors.New("PIS numbers must contain 11 or 13 numbers")

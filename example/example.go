@@ -16,6 +16,7 @@ func main() {
 	mobile, err := brazil.ParseMobile(mobileFullNumber)
 	if err != nil {
 		log.Println(err)
+		log.Println(mobileFullNumber)
 		return
 	}
 
@@ -40,6 +41,7 @@ func main() {
 	cpf, err := brazil.ParseCPF(cpfNumber)
 	if err != nil {
 		log.Println(err)
+		log.Println(cpfNumber)
 		return
 	}
 
@@ -55,6 +57,7 @@ func main() {
 	pis, err := brazil.ParsePIS(pisNumber)
 	if err != nil {
 		log.Println(err)
+		log.Println(pisNumber)
 		return
 	}
 
@@ -70,6 +73,7 @@ func main() {
 	titulo, err := brazil.ParseTituloEleitoral(tituloEleitoralNumber)
 	if err != nil {
 		log.Println(err)
+		log.Println(tituloEleitoralNumber)
 		return
 	}
 
@@ -85,6 +89,7 @@ func main() {
 	sus, err := brazil.ParseSUS(susNumber)
 	if err != nil {
 		log.Println(err)
+		log.Println(susNumber)
 		return
 	}
 
@@ -104,6 +109,7 @@ func main() {
 	date, err := brazil.ParseDate(newDate)
 	if err != nil {
 		log.Println(err)
+		log.Println(newDate)
 		return
 	}
 
