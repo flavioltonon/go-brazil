@@ -97,38 +97,4 @@ func main() {
 	log.Println(sus.Number(true))
 
 	// ------------------------------------------------------------------------------------------------
-
-	// Generates a new time.Time date inside of a chosen range of years
-	newDate, err := brazil.RandomDate(0, 1000)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
-	// Creates a new Date struct
-	date, err := brazil.ParseDate(newDate)
-	if err != nil {
-		log.Println(err)
-		log.Println(newDate)
-		return
-	}
-
-	// Returns date
-	log.Println(date.Date())
-
-	// Returns time
-	log.Println(date.Time())
-
-	// Validators - return true when their condition is matched
-	log.Println(date.IsFuture())
-	log.Println(date.IsToday())
-	log.Println(date.IsPast())
-
-	// Returns true if date is older than the input date object
-	log.Println(date.IsOlderThan(date))
-
-	// Returns true if year input is a leap year
-	log.Println(brazil.IsLeapYear(date.Year()))
-
-	// ------------------------------------------------------------------------------------------------
 }
