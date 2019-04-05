@@ -10,38 +10,35 @@ import (
 // PIS struct
 type pis struct {
 	number pisNumber
+	valid  bool
 }
 
 func (p pis) Number(mask bool) string {
-	var pNumber = p.number
-
-	if mask {
-		return string(pNumber[:3]) + "." + string(pNumber[3:8]) + "." + string(pNumber[8:10]) + "-" + string(pNumber[10:])
+	if p.valid && mask {
+		return string(p.number[:3]) + "." + string(p.number[3:8]) + "." + string(p.number[8:10]) + "-" + string(p.number[10:])
 	}
-	return string(pNumber)
+	return string(p.number)
 }
 
 func ParsePIS(number string) (pis, error) {
-	var pNumber pisNumber
-
 	number = regexp.MustCompile(`[^0-9]`).ReplaceAllString(number, "")
-
 	if len(number) != 11 && len(number) != 13 {
-		return pis{}, errIncorrectLenghtPisNumber
+		return pis{}, errIncorrectLenghtPISNumber
 	}
 
-	pNumber = pisNumber(number)
+	pisNumber := pisNumber(number)
 
-	if pNumber.isFalsePositive() {
-		return pis{}, errInvalidPisNumber
+	if pisNumber.isFalsePositive() {
+		return pis{}, errInvalidPISNumber
 	}
 
-	if !pNumber.hasValidDigit() {
-		return pis{}, errInvalidPisNumber
+	if !pisNumber.hasValidDigit() {
+		return pis{}, errInvalidPISNumber
 	}
 
 	return pis{
-		number: pNumber,
+		number: pisNumber,
+		valid:  true,
 	}, nil
 }
 
