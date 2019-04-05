@@ -10,44 +10,41 @@ import (
 // Título de eleitor struct
 type tituloEleitoral struct {
 	number tituloEleitoralNumber
+	valid  bool
 }
 
 func (t tituloEleitoral) Number(mask bool) string {
-	var tNumber = t.number
-
-	if mask {
-		return string(tNumber[:4]) + " " + string(tNumber[4:8]) + " " + string(tNumber[8:])
+	if t.valid && mask {
+		return string(t.number[:4]) + " " + string(t.number[4:8]) + " " + string(t.number[8:])
 	}
-	return string(tNumber)
+	return string(t.number)
 }
 
 type tituloEleitoralNumber string
 
 func ParseTituloEleitoral(number string) (tituloEleitoral, error) {
-	var tNumber tituloEleitoralNumber
-
 	number = regexp.MustCompile(`[^0-9]`).ReplaceAllString(number, "")
-
 	if len(number) != 12 && len(number) != 14 {
 		return tituloEleitoral{}, errIncorrectLenghtTituloEleitoralNumber
 	}
 
-	tNumber = tituloEleitoralNumber(number)
+	tituloNumber := tituloEleitoralNumber(number)
 
-	if tNumber.isFalsePositive() {
+	if tituloNumber.isFalsePositive() {
 		return tituloEleitoral{}, errInvalidTituloEleitoralNumber
 	}
 
-	if !tNumber.hasValidFirstDigit() {
+	if !tituloNumber.hasValidFirstDigit() {
 		return tituloEleitoral{}, errInvalidTituloEleitoralNumber
 	}
 
-	if !tNumber.hasValidSecondDigit() {
+	if !tituloNumber.hasValidSecondDigit() {
 		return tituloEleitoral{}, errInvalidTituloEleitoralNumber
 	}
 
 	return tituloEleitoral{
-		number: tNumber,
+		number: tituloNumber,
+		valid:  true,
 	}, nil
 }
 
@@ -130,47 +127,43 @@ func (t tituloEleitoralNumber) isFalsePositive() bool {
 }
 
 func (t tituloEleitoralNumber) hasValidFirstDigit() bool {
-	var sum, digit int
+	var sum int
 
 	for i := 0; i < 8; i++ {
 		tituloEleitoralDigit, _ := strconv.Atoi(string(t[i]))
 		sum += tituloEleitoralDigit * (i + 2)
 	}
-	digit = sum % 11
-	if digit == 0 {
-		stateCode, _ := strconv.Atoi(string(t[8:10]))
-		switch stateCode {
-		case 1:
-			digit = 1
-			break
-		case 2:
-			digit = 1
-			break
-		}
+
+	digit := sum % 11
+	if digit != 0 {
+		return string(t[10]) == strconv.Itoa(digit%10)
 	}
 
-	return string(t[10]) == strconv.Itoa(digit%10) || string(t[10]) == strconv.Itoa(digit)
+	stateCode := string(t[8:10])
+	if stateCode == "01" || stateCode == "02" {
+		return string(t[10]) == strconv.Itoa(1)
+	}
+
+	return string(t[10]) == strconv.Itoa(digit)
 }
 
 func (t tituloEleitoralNumber) hasValidSecondDigit() bool {
-	var sum, digit int
+	var sum int
 
 	for i := 8; i < 11; i++ {
 		tituloEleitoralDigit, _ := strconv.Atoi(string(t[i]))
 		sum += tituloEleitoralDigit * (i - 1)
 	}
-	digit = sum % 11
-	if digit == 0 {
-		stateCode, _ := strconv.Atoi(string(t[8:10]))
-		switch stateCode {
-		case 1:
-			digit = 1
-			break
-		case 2:
-			digit = 1
-			break
-		}
+
+	digit := sum % 11
+	if digit != 0 {
+		return string(t[11]) == strconv.Itoa(digit%10)
 	}
 
-	return string(t[11]) == strconv.Itoa(digit%10) || string(t[11]) == strconv.Itoa(digit)
+	stateCode := string(t[8:10])
+	if stateCode == "01" || stateCode == "02" {
+		return string(t[11]) == strconv.Itoa(1)
+	}
+
+	return string(t[11]) == strconv.Itoa(digit)
 }
