@@ -15,105 +15,79 @@ type mobile struct {
 }
 
 func (m mobile) FullNumber(mask bool) string {
-	if mask {
-		return "+" + string(m.countryCode) + "(" + string(m.areaCode) + ")" + string(m.number[:5]) + "-" + string(m.number[5:])
+	if m.countryCode != "" && m.areaCode != "" && m.number != "" {
+		if mask {
+			return "+" + string(m.countryCode) + "(" + string(m.areaCode) + ")" + string(m.number[:5]) + "-" + string(m.number[5:])
+		}
 	}
+
 	return string(m.countryCode) + string(m.areaCode) + string(m.number)
 }
 
 func (m mobile) CountryCode(mask bool) string {
-	var cCode = m.countryCode
-
-	if mask {
-		return "+" + string(cCode)
+	if m.countryCode != "" && mask {
+		return "+" + string(m.countryCode)
 	}
-	return string(cCode)
+	return string(m.countryCode)
 }
 
 func (m mobile) AreaCode(mask bool) string {
-	var aCode = m.areaCode
-
-	if mask {
-		return "(" + string(aCode) + ")"
+	if m.areaCode != "" && mask {
+		return "(" + string(m.areaCode) + ")"
 	}
-	return string(aCode)
+	return string(m.areaCode)
 }
 
 func (m mobile) Number(mask bool) string {
-	var mNumber = m.number
-	if mask {
-		return string(mNumber[:5]) + "-" + string(mNumber[5:])
+	if m.number != "" && mask {
+		return string(m.number[:5]) + "-" + string(m.number[5:])
 	}
-	return string(mNumber)
+	return string(m.number)
 }
 
 func ParseMobile(number string) (mobile, error) {
-	var (
-		cCode   countryCode
-		aCode   areaCode
-		mNumber mobileNumber
-	)
-
 	number = regexp.MustCompile(`[^0-9]`).ReplaceAllString(number, "")
-
-	if len(number) == 13 {
-		cCode = countryCode(number[:2])
-		number = number[2:]
-	}
-	if len(number) == 11 {
-		aCode = areaCode(number[:2])
-		number = number[2:]
-	}
-
-	mNumber = mobileNumber(number)
-
-	if len(mNumber) != 9 {
+	if len(number) != 13 {
 		return mobile{}, errIncorrectFormatMobileNumber
 	}
 
-	if len(cCode) > 0 && !cCode.isValid() {
+	countryCode := countryCode(number[:2])
+	areaCode := areaCode(number[2:4])
+	mobileNumber := mobileNumber(number[4:])
+
+	if !countryCode.isValid() {
 		return mobile{}, errInvalidBrazilianCountryCode
 	}
 
-	if len(aCode) > 0 && !aCode.isValid() {
+	if !areaCode.isValid() {
 		return mobile{}, errInvalidBrazilianAreaCode
 	}
 
-	if len(mNumber) > 0 && !mNumber.isValid() {
+	if !mobileNumber.isValid() {
 		return mobile{}, errInvalidBrazilianMobileNumber
 	}
 
 	return mobile{
-		countryCode: cCode,
-		areaCode:    aCode,
-		number:      mNumber,
+		countryCode: countryCode,
+		areaCode:    areaCode,
+		number:      mobileNumber,
 	}, nil
 }
 
 func RandomMobileFullNumber(mask bool) string {
-	var (
-		cCode   = CountryCode(mask)
-		aCode   = RandomAreaCode(mask)
-		mNumber = RandomNumber(mask)
-	)
-
-	if mask {
-		return "+" + cCode + "(" + aCode + ")" + mNumber
+	mobile, err := ParseMobile(standardCountryCode + RandomAreaCode() + RandomNumber())
+	if err != nil {
+		panic("Internal Error")
 	}
-	return cCode + aCode + mNumber
+	return mobile.FullNumber(mask)
 }
 
 type countryCode string
 
-func CountryCode(mask bool) string {
-	if mask {
-		return "+55"
-	}
-	return "55"
-}
+var standardCountryCode = "55"
 
 func (c countryCode) isValid() bool {
-	return c == countryCode(CountryCode(false))
+	return c == countryCode(standardCountryCode)
 }
 
 type areaCode string
@@ -141,17 +115,12 @@ func (a areaCode) isValid() bool {
 	return false
 }
 
-func RandomAreaCode(mask bool) string {
-	var source = rand.NewSource(time.Now().UnixNano())
-
+func RandomAreaCode() string {
+	source := rand.NewSource(time.Now().UnixNano())
 	r := rand.New(source)
+	areaCodes := ListAreaCodes()
 
-	aCode := ListAreaCodes()[int(r.Int63n(59))]
-
-	if mask {
-		return "(" + string(aCode) + ")"
-	}
-	return string(aCode)
+	return string(areaCodes[int(r.Int31n(int32(len(areaCodes))))])
 }
 
 type mobileNumber string
@@ -163,18 +132,9 @@ func (m mobileNumber) isValid() bool {
 	return true
 }
 
-func RandomNumber(mask bool) string {
-	var (
-		source  = rand.NewSource(time.Now().UnixNano())
-		mNumber mobileNumber
-	)
-
+func RandomNumber() string {
+	source := rand.NewSource(time.Now().UnixNano())
 	r := rand.New(source)
 
-	mNumber = mobileNumber(strconv.Itoa(900000000 + int(r.Int63n(99999999))))
-
-	if mask {
-		return string(mNumber[:5]) + "-" + string(mNumber[5:])
-	}
-	return string(mNumber)
+	return string(mobileNumber(strconv.Itoa(900000000 + int(r.Int63n(99999999)))))
 }

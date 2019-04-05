@@ -10,33 +10,30 @@ import (
 // SUS struct
 type sus struct {
 	number susNumber
+	valid  bool
 }
 
 func (s sus) Number(mask bool) string {
-	var sNumber = s.number
-	if mask {
-		return string(sNumber[:3]) + " " + string(sNumber[3:7]) + " " + string(sNumber[7:11]) + " " + string(sNumber[11:])
+	if s.valid && mask {
+		return string(s.number[:3]) + " " + string(s.number[3:7]) + " " + string(s.number[7:11]) + " " + string(s.number[11:])
 	}
-	return string(sNumber)
+	return string(s.number)
 }
 
 func ParseSUS(number string) (sus, error) {
-	var sNumber susNumber
-
 	number = regexp.MustCompile(`[^0-9]`).ReplaceAllString(number, "")
-
 	if len(number) != 15 {
 		return sus{}, errIncorrectLenghtSusNumber
 	}
 
-	sNumber = susNumber(number)
-
-	if !sNumber.isValid() {
+	susNumber := susNumber(number)
+	if !susNumber.isValid() {
 		return sus{}, errInvalidSusNumber
 	}
 
 	return sus{
-		number: sNumber,
+		number: susNumber,
+		valid:  true,
 	}, nil
 }
 
