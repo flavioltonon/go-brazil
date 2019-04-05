@@ -12,34 +12,33 @@ type mobile struct {
 	countryCode countryCode
 	areaCode    areaCode
 	number      mobileNumber
+	valid       bool
 }
 
 func (m mobile) FullNumber(mask bool) string {
-	if m.countryCode != "" && m.areaCode != "" && m.number != "" {
-		if mask {
-			return "+" + string(m.countryCode) + "(" + string(m.areaCode) + ")" + string(m.number[:5]) + "-" + string(m.number[5:])
-		}
+	if m.valid && mask {
+		return "+" + string(m.countryCode) + "(" + string(m.areaCode) + ")" + string(m.number[:5]) + "-" + string(m.number[5:])
 	}
 
 	return string(m.countryCode) + string(m.areaCode) + string(m.number)
 }
 
 func (m mobile) CountryCode(mask bool) string {
-	if m.countryCode != "" && mask {
+	if m.valid && mask {
 		return "+" + string(m.countryCode)
 	}
 	return string(m.countryCode)
 }
 
 func (m mobile) AreaCode(mask bool) string {
-	if m.areaCode != "" && mask {
+	if m.valid && mask {
 		return "(" + string(m.areaCode) + ")"
 	}
 	return string(m.areaCode)
 }
 
 func (m mobile) Number(mask bool) string {
-	if m.number != "" && mask {
+	if m.valid && mask {
 		return string(m.number[:5]) + "-" + string(m.number[5:])
 	}
 	return string(m.number)
@@ -71,6 +70,7 @@ func ParseMobile(number string) (mobile, error) {
 		countryCode: countryCode,
 		areaCode:    areaCode,
 		number:      mobileNumber,
+		valid:       true,
 	}, nil
 }
 
