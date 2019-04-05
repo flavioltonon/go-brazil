@@ -10,42 +10,46 @@ import (
 // CPF struct
 type cpf struct {
 	number cpfNumber
+	valid  bool
 }
 
 func (c cpf) Number(mask bool) string {
-	var cNumber = c.number
-
-	if mask {
-		return string(cNumber[:3]) + "." + string(cNumber[3:6]) + "." + string(cNumber[6:9]) + "-" + string(cNumber[9:])
+	if c.valid && mask {
+		return string(c.number[:3]) +
+			"." +
+			string(c.number[3:6]) +
+			"." +
+			string(c.number[6:9]) +
+			"-" +
+			string(c.number[9:])
 	}
-	return string(cNumber)
+	return string(c.number)
 }
 
 func ParseCPF(number string) (cpf, error) {
-	var cNumber cpfNumber
-
 	number = regexp.MustCompile(`[^0-9]`).ReplaceAllString(number, "")
 
 	if len(number) != 11 {
-		return cpf{}, errIncorrectLenghtCpfNumber
+		return cpf{}, errIncorrectLenghtCPFNumber
 	}
 
-	cNumber = cpfNumber(number)
+	cpfNumber := cpfNumber(number)
 
-	if cNumber.isFalsePositive() {
-		return cpf{}, errInvalidCpfNumber
+	if cpfNumber.isFalsePositive() {
+		return cpf{}, errInvalidCPFNumber
 	}
 
-	if !cNumber.hasValidFirstDigit() {
-		return cpf{}, errInvalidCpfNumber
+	if !cpfNumber.hasValidFirstDigit() {
+		return cpf{}, errInvalidCPFNumber
 	}
 
-	if !cNumber.hasValidSecondDigit() {
-		return cpf{}, errInvalidCpfNumber
+	if !cpfNumber.hasValidSecondDigit() {
+		return cpf{}, errInvalidCPFNumber
 	}
 
 	return cpf{
-		number: cNumber,
+		number: cpfNumber,
+		valid:  true,
 	}, nil
 }
 
