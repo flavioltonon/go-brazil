@@ -10,7 +10,7 @@ Go Brazil is a library for evaluation of brazilian documents and other patterns.
  
 ## Usage
 
-In general, the lib usage involve the generation and evaluation of brazilian documents and other patterns, such as the brazilian date format.
+In general, the lib usage involves the generation and evaluation of brazilian document numbers and other brazilian patterns, such as the date format and mobile numbers.
 Here are the documents/patterns which have been contemplated so far:
 
 - **CPF (Cadastro de Pessoa Física)**
