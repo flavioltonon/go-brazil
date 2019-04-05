@@ -3,14 +3,14 @@ package brazil
 import "errors"
 
 var (
-	errIncorrectLenghtCpfNumber = errors.New("CPF numbers must contain 11 numbers")
-	errInvalidCpfNumber         = errors.New("CPF number input is not valid")
+	errIncorrectLenghtCPFNumber = errors.New("CPF numbers must contain 11 numbers")
+	errInvalidCPFNumber         = errors.New("CPF number input is not valid")
 
 	errIncorrectLenghtTituloEleitoralNumber = errors.New("CPF numbers must contain 12 or 14 numbers")
 	errInvalidTituloEleitoralNumber         = errors.New("Título de eleitor number input is not valid")
 
-	errIncorrectLenghtPisNumber = errors.New("PIS numbers must contain 11 or 13 numbers")
-	errInvalidPisNumber         = errors.New("PIS number input is not valid")
+	errIncorrectLenghtPISNumber = errors.New("PIS numbers must contain 11 or 13 numbers")
+	errInvalidPISNumber         = errors.New("PIS number input is not valid")
 
 	errIncorrectFormatDate = errors.New("Date format input is different than expected. Expected format: DD/MM/YYYY")
 	errInvalidYearLimits   = errors.New("Date minYear must be lower than maxYear and higher than zero")
