@@ -74,13 +74,8 @@ func RandomTituloEleitoralNumber(mask bool) string {
 	}
 	firstDigit := sum % 11
 	if firstDigit == 0 {
-		switch stateCode {
-		case 1:
+		if stateCodeString == "01" || stateCodeString == "02" {
 			firstDigit = 1
-			break
-		case 2:
-			firstDigit = 1
-			break
 		}
 	}
 	if firstDigit == 10 {
@@ -95,17 +90,9 @@ func RandomTituloEleitoralNumber(mask bool) string {
 	}
 	sum = sum + firstDigit*9
 	secondDigit := sum % 11
-	if secondDigit == 10 {
-		secondDigit = 0
-	}
 	if secondDigit == 0 {
-		switch stateCode {
-		case 1:
+		if stateCodeString == "01" || stateCodeString == "02" {
 			secondDigit = 1
-			break
-		case 2:
-			secondDigit = 1
-			break
 		}
 	}
 	if secondDigit == 10 {
