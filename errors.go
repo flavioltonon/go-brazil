@@ -3,6 +3,10 @@ package brazil
 import "errors"
 
 var (
+	errIncorrectLenghtCNPJNumber = errors.New("CNPJ numbers must contain 11 numbers")
+	errInvalidCNPJFirstDigit     = errors.New("CNPJ number first digit input is not valid")
+	errInvalidCNPJSecondDigit    = errors.New("CNPJ number second digit input is not valid")
+
 	errIncorrectLenghtCPFNumber = errors.New("CPF numbers must contain 11 numbers")
 	errInvalidCPFNumber         = errors.New("CPF number input is not valid")
 
