@@ -50,6 +50,22 @@ func main() {
 
 	// ------------------------------------------------------------------------------------------------
 
+	// Generates a new CNPJ number in the string format XX.XXX.XXX/XXXX-XX
+	cnpjNumber := brazil.RandomCNPJNumber(true)
+
+	// Creates a new CNPJ struct
+	cnpj, err := brazil.ParseCNPJ(cnpjNumber)
+	if err != nil {
+		log.Println(err)
+		log.Println(cnpjNumber)
+		return
+	}
+
+	// Returns CNPJ number
+	log.Println(cnpj.Number(true))
+
+	// ------------------------------------------------------------------------------------------------
+
 	// Generates a new PIS number in the string format XXX.XXXXX.XX-X
 	pisNumber := brazil.RandomPISNumber(true)
 
