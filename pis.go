@@ -50,11 +50,11 @@ func RandomPISNumber(mask bool) string {
 	)
 
 	r := rand.New(source)
-	pNumber := int(r.Int63n(8999999999) + 1000000000)
-	pString := strconv.Itoa(pNumber)
+	pisNumber := int(r.Int63n(8999999999) + 1000000000)
+	pisString := strconv.Itoa(pisNumber)
 
 	for i := 0; i < 10; i++ {
-		number, _ := strconv.Atoi(string(pString[i]))
+		number, _ := strconv.Atoi(string(pisString[i]))
 		sum += number * multipliers[i]
 	}
 	digit := 11 - sum%11
@@ -63,9 +63,9 @@ func RandomPISNumber(mask bool) string {
 	}
 
 	if mask {
-		return pString[:3] + "." + pString[3:8] + "." + pString[8:] + "-" + strconv.Itoa(digit)
+		return pisString[:3] + "." + pisString[3:8] + "." + pisString[8:] + "-" + strconv.Itoa(digit)
 	}
-	return pString + strconv.Itoa(digit)
+	return pisString + strconv.Itoa(digit)
 }
 
 type pisNumber string
