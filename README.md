@@ -13,7 +13,8 @@ Go Brazil is a library for evaluation of brazilian documents and other patterns.
 In general, the lib usage involves the generation and evaluation of brazilian document numbers and other brazilian patterns, such as mobile numbers.
 Here are the documents/patterns which have been contemplated so far:
 
-- **CPF (Cadastro de Pessoa Física)**
+- **CNPJ (Cadastro Nacional de Pessoas Jurídicas)**
+- **CPF (Cadastro de Pessoas Físicas)**
 - **Título de Eleitor**
 - **PIS**
 - **SUS**
