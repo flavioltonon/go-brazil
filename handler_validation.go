@@ -4,20 +4,19 @@ import (
 	"fmt"
 )
 
-type DocumentType string
+type documentType string
 
 const (
-	CNPJ            DocumentType = "cnpj"
-	CPF             DocumentType = "cpf"
-	MOBILE          DocumentType = "mobile"
-	PIS             DocumentType = "pis"
-	SUS             DocumentType = "sus"
-	TITULOELEITORAL DocumentType = "tituloEleitoral"
+	CNPJ            documentType = "cnpj"
+	CPF             documentType = "cpf"
+	MOBILE          documentType = "mobile"
+	PIS             documentType = "pis"
+	SUS             documentType = "sus"
+	TITULOELEITORAL documentType = "tituloEleitoral"
 )
 
-func Validate(docType DocumentType, number string, mask bool) (string, error) {
-
-	switch docType {
+func Validate(t documentType, number string, mask bool) (string, error) {
+	switch t {
 	case CNPJ:
 		cnpj, err := ParseCNPJ(number)
 		if err != nil {
@@ -61,6 +60,6 @@ func Validate(docType DocumentType, number string, mask bool) (string, error) {
 		return titulo.Number(mask), err
 
 	default:
-		return "", fmt.Errorf("%s is not a valid docType", docType)
+		return "", fmt.Errorf("%s is not a valid document type", t)
 	}
 }
