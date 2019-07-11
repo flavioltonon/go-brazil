@@ -107,6 +107,25 @@ func main() {
 	}
 
 	// ------------------------------------------------------------------------------------------------
+
+	{
+		// Generates a new Certidao number in the string format XXXXXXXXXXXX
+		certidaoNumber := brazil.RandomCertidaoNumber(true)
+
+		// Creates a new Certidao struct
+		certidao, err := brazil.ParseCertidao(certidaoNumber)
+		if err != nil {
+			log.Println(err)
+			log.Println(certidaoNumber)
+			return
+		}
+
+		// Returns Certidao number
+		log.Println(certidao)
+	}
+
+	// ------------------------------------------------------------------------------------------------
+
 	{
 		// Generates a new SUS number in the string format XXXXXXXXXXXX
 		susNumber := brazil.RandomSUSNumber(true)
@@ -122,6 +141,7 @@ func main() {
 		// Returns SUS number
 		log.Println(sus.Number(true))
 	}
+
 	// ------------------------------------------------------------------------------------------------
 
 	{
@@ -228,6 +248,24 @@ func main() {
 
 		// Returns SUS number
 		log.Println(sus)
+	}
+
+	// ------------------------------------------------------------------------------------------------
+
+	{
+		// Generates a new Certidao number in the string format XXXXXXXXXXXX
+		certidaoNumber := brazil.RandomCertidaoNumber(true)
+
+		// Creates a new Certidao struct
+		certidao, err := brazil.Validate("certidao", certidaoNumber, true)
+		if err != nil {
+			log.Println(err)
+			log.Println(certidaoNumber)
+			return
+		}
+
+		// Returns Certidao number
+		log.Println(certidao)
 	}
 
 	// ------------------------------------------------------------------------------------------------
