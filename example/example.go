@@ -254,7 +254,7 @@ func main() {
 
 	{
 		// Generates a new Certidao number in the string format XXXXXXXXXXXX
-		certidaoNumber := brazil.RandomCertidaoNumber(true)
+		certidaoNumber := brazil.RandomCertidaoNumber(true, brazil.CertidaoKindNone)
 
 		// Creates a new Certidao struct
 		certidao, err := brazil.Validate("certidao", certidaoNumber, true)

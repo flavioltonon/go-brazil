@@ -3,6 +3,7 @@ package brazil_test
 import (
 	"testing"
 
+	"github.com/flavioltonon/go-brazil"
 	. "github.com/flavioltonon/go-brazil"
 
 	. "github.com/smartystreets/goconvey/convey"
@@ -98,7 +99,7 @@ func TestParseCertidao(t *testing.T) {
 func TestRandomCertidaoNumber(t *testing.T) {
 	Convey("Given the function RandomCertidaoNumber", t, func() {
 		Convey("If its mask argument equals true", func() {
-			number := RandomCertidaoNumber(true)
+			number := RandomCertidaoNumber(true, brazil.CertidaoKindNone)
 
 			Convey("It should return a valid Certidao number", func() {
 				certidao, err := ParseCertidao(number)
@@ -110,7 +111,7 @@ func TestRandomCertidaoNumber(t *testing.T) {
 		})
 
 		Convey("If its mask argument equals false", func() {
-			number := RandomCertidaoNumber(false)
+			number := RandomCertidaoNumber(false, brazil.CertidaoKindNone)
 
 			Convey("It should return a valid Certidao number", func() {
 				certidao, err := ParseCertidao(number)
