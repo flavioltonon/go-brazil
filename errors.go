@@ -3,7 +3,12 @@ package brazil
 import "errors"
 
 var (
-	errIncorrectLenghtCNPJNumber = errors.New("CNPJ numbers must contain 11 numbers")
+	errIncorrectLenghtCertidaoNumber = errors.New("Certidão numbers must contain 30 numbers")
+	errInvalidCertidaoYear           = errors.New("Certidão year input is not valid")
+	errInvalidCertidaoFirstDigit     = errors.New("Certidão number first digit input is not valid")
+	errInvalidCertidaoSecondDigit    = errors.New("Certidão number second digit input is not valid")
+
+	errIncorrectLenghtCNPJNumber = errors.New("CNPJ numbers must contain 14 numbers")
 	errInvalidCNPJFirstDigit     = errors.New("CNPJ number first digit input is not valid")
 	errInvalidCNPJSecondDigit    = errors.New("CNPJ number second digit input is not valid")
 
