@@ -7,12 +7,13 @@ import (
 type documentType string
 
 const (
-	CNPJ            documentType = "cnpj"
-	CPF             documentType = "cpf"
-	MOBILE          documentType = "mobile"
-	PIS             documentType = "pis"
-	SUS             documentType = "sus"
-	TITULOELEITORAL documentType = "tituloEleitoral"
+	CNPJ             documentType = "cnpj"
+	CPF              documentType = "cpf"
+	MOBILE           documentType = "mobile"
+	PIS              documentType = "pis"
+	SUS              documentType = "sus"
+	TITULO_ELEITORAL documentType = "tituloEleitoral"
+	CERTIDAO         documentType = "certidao"
 )
 
 func Validate(t documentType, number string, mask bool) (string, error) {
@@ -52,12 +53,19 @@ func Validate(t documentType, number string, mask bool) (string, error) {
 		}
 		return sus.Number(mask), err
 
-	case TITULOELEITORAL:
+	case TITULO_ELEITORAL:
 		titulo, err := ParseTituloEleitoral(number)
 		if err != nil {
 			return "", err
 		}
 		return titulo.Number(mask), err
+
+	case CERTIDAO:
+		certidao, err := ParseCertidao(number)
+		if err != nil {
+			return "", err
+		}
+		return certidao.Number(mask), err
 
 	default:
 		return "", fmt.Errorf("%s is not a valid document type", t)
