@@ -16,16 +16,16 @@ type certidao struct {
 type certidaoKind string
 
 const (
-	Nascimento         certidaoKind = "nascimento"
-	Casamento          certidaoKind = "casamento"
-	CasamentoReligioso certidaoKind = "casamento-religioso"
-	Obito              certidaoKind = "obito"
-	Natimorto          certidaoKind = "natimorto"
-	Proclamas          certidaoKind = "proclamas" // anúncio necessário antes de qualquer casamento entre noivos de diferentes distritos ou cidades
-	Especial           certidaoKind = "especial"  // averbações; nascimentos, casamentos e óbitos ocorridos no exterior
-	Emancipacao        certidaoKind = "emancipacao"
-	Interdicao         certidaoKind = "interdicao"
-	None               certidaoKind = "none"
+	CertidaoKindNascimento         certidaoKind = "nascimento"
+	CertidaoKindCasamento          certidaoKind = "casamento"
+	CertidaoKindCasamentoReligioso certidaoKind = "casamento-religioso"
+	CertidaoKindObito              certidaoKind = "obito"
+	CertidaoKindNatimorto          certidaoKind = "natimorto"
+	CertidaoKindProclamas          certidaoKind = "proclamas" // anúncio necessário antes de qualquer casamento entre noivos de diferentes distritos ou cidades
+	CertidaoKindEspecial           certidaoKind = "especial"  // averbações; nascimentos, casamentos e óbitos ocorridos no exterior
+	CertidaoKindEmancipacao        certidaoKind = "emancipacao"
+	CertidaoKindInterdicao         certidaoKind = "interdicao"
+	CertidaoKindNone               certidaoKind = "none"
 )
 
 func (c certidaoKind) string() string {
@@ -34,23 +34,23 @@ func (c certidaoKind) string() string {
 
 func (c certidaoKind) number() int {
 	switch c {
-	case Nascimento:
+	case CertidaoKindNascimento:
 		return 1
-	case Casamento:
+	case CertidaoKindCasamento:
 		return 2
-	case CasamentoReligioso:
+	case CertidaoKindCasamentoReligioso:
 		return 3
-	case Obito:
+	case CertidaoKindObito:
 		return 4
-	case Natimorto:
+	case CertidaoKindNatimorto:
 		return 5
-	case Proclamas:
+	case CertidaoKindProclamas:
 		return 6
-	case Especial:
+	case CertidaoKindEspecial:
 		return 7
-	case Emancipacao:
+	case CertidaoKindEmancipacao:
 		return 8
-	case Interdicao:
+	case CertidaoKindInterdicao:
 		return 9
 	default:
 		return 0
@@ -82,26 +82,26 @@ func (c certidao) Number(mask bool) string {
 
 func (c certidao) Kind() string {
 	switch int(c.number[14]) {
-	case Nascimento.number():
-		return Nascimento.string()
-	case Casamento.number():
-		return Casamento.string()
-	case CasamentoReligioso.number():
-		return CasamentoReligioso.string()
-	case Obito.number():
-		return Obito.string()
-	case Natimorto.number():
-		return Natimorto.string()
-	case Proclamas.number():
-		return Proclamas.string()
-	case Especial.number():
-		return Especial.string()
-	case Emancipacao.number():
-		return Emancipacao.string()
-	case Interdicao.number():
-		return Interdicao.string()
+	case CertidaoKindNascimento.number():
+		return CertidaoKindNascimento.string()
+	case CertidaoKindCasamento.number():
+		return CertidaoKindCasamento.string()
+	case CertidaoKindCasamentoReligioso.number():
+		return CertidaoKindCasamentoReligioso.string()
+	case CertidaoKindObito.number():
+		return CertidaoKindObito.string()
+	case CertidaoKindNatimorto.number():
+		return CertidaoKindNatimorto.string()
+	case CertidaoKindProclamas.number():
+		return CertidaoKindProclamas.string()
+	case CertidaoKindEspecial.number():
+		return CertidaoKindEspecial.string()
+	case CertidaoKindEmancipacao.number():
+		return CertidaoKindEmancipacao.string()
+	case CertidaoKindInterdicao.number():
+		return CertidaoKindInterdicao.string()
 	default:
-		return None.string()
+		return CertidaoKindNone.string()
 	}
 }
 
@@ -148,7 +148,7 @@ func RandomCertidaoNumber(mask bool, kind certidaoKind) string {
 	nf := r.Intn(899) + 100
 	nt := r.Intn(8999999) + 1000000
 
-	if kind != None {
+	if kind != CertidaoKindNone {
 		tl = kind.number()
 	}
 
