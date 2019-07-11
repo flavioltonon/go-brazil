@@ -27,6 +27,6 @@ var (
 	errInvalidBrazilianAreaCode     = errors.New("Brazilian mobile numbers should have a valid brazilian area code (ex: 11, 21, 53, 68, etc)")
 	errInvalidBrazilianMobileNumber = errors.New("Brazilian mobile numbers should have a valid number (ex: 9xxxx-xxxx")
 
-	errIncorrectLenghtSusNumber = errors.New("SUS numbers must contain 15 numbers")
-	errInvalidSusNumber         = errors.New("SUS number input is not valid")
+	errIncorrectLenghtSUSNumber = errors.New("SUS numbers must contain 15 numbers")
+	errInvalidSUSNumber         = errors.New("SUS number input is not valid")
 )

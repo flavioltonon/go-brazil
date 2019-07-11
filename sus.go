@@ -23,12 +23,12 @@ func (s sus) Number(mask bool) string {
 func ParseSUS(number string) (sus, error) {
 	number = regexp.MustCompile(`[^0-9]`).ReplaceAllString(number, "")
 	if len(number) != 15 {
-		return sus{}, errIncorrectLenghtSusNumber
+		return sus{}, errIncorrectLenghtSUSNumber
 	}
 
 	susNumber := susNumber(number)
 	if !susNumber.isValid() {
-		return sus{}, errInvalidSusNumber
+		return sus{}, errInvalidSUSNumber
 	}
 
 	return sus{
