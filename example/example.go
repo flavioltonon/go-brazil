@@ -121,7 +121,7 @@ func main() {
 		}
 
 		// Returns Certidao number
-		log.Println(certidao)
+		log.Println(certidao.Number(true))
 	}
 
 	// ------------------------------------------------------------------------------------------------
