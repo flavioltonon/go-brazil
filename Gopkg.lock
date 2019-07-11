@@ -2,12 +2,12 @@
 
 
 [[projects]]
-  digest = "1:e012584361d2f6d4f1ecd631573e54fb9e4232742ea8157120f9a4dbbd610a2b"
+  digest = "1:4ae1f97d8d4a511ea345f7a735aa1ced04b261ba5205341266e00fbbc9c0913a"
   name = "github.com/flavioltonon/go-brazil"
   packages = ["."]
   pruneopts = "UT"
-  revision = "f7cecdfd22c8efeb20b7bdad2c34ec84821cf54c"
-  version = "v0.9.1"
+  revision = "8fa3ec3031f1f40aa39a465ef5e81b3c485b8de4"
+  version = "v0.9.2"
 
 [[projects]]
   branch = "master"
