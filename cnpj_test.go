@@ -3,7 +3,7 @@ package brazil_test
 import (
 	"testing"
 
-	. "github.com/flavioltonon/go-brazil"
+	. "flavioltonon/go-brazil"
 
 	. "github.com/smartystreets/goconvey/convey"
 )
