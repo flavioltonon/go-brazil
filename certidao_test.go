@@ -88,6 +88,7 @@ func TestParseCertidao(t *testing.T) {
 					Convey("And the Certidao struct number should exist", func() {
 						So(certidao.Number(false), ShouldEqual, "10453901552013100012021000012321")
 						So(certidao.Number(true), ShouldEqual, "104539 01 55 2013 1 00012 021 0000123-21")
+						So(certidao.Kind(), ShouldEqual, CertidaoKindNascimento)
 					})
 				})
 			})
@@ -118,6 +119,7 @@ func TestRandomCertidaoNumber(t *testing.T) {
 				So(err, ShouldEqual, nil)
 				So(certidao.Number(false), ShouldNotEqual, "")
 				So(certidao.Number(true), ShouldNotEqual, "")
+				So(certidao.Kind(), ShouldNotEqual, CertidaoKindNone)
 			})
 		})
 	})

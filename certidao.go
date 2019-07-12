@@ -28,10 +28,6 @@ const (
 	CertidaoKindNone               certidaoKind = "none"
 )
 
-func (c certidaoKind) string() string {
-	return string(c)
-}
-
 func (c certidaoKind) number() int {
 	switch c {
 	case CertidaoKindNascimento:
@@ -80,28 +76,30 @@ func (c certidao) Number(mask bool) string {
 	return string(c.number)
 }
 
-func (c certidao) Kind() string {
-	switch int(c.number[14]) {
+func (c certidao) Kind() certidaoKind {
+	kind, _ := strconv.Atoi(string(c.number[14]))
+
+	switch kind {
 	case CertidaoKindNascimento.number():
-		return CertidaoKindNascimento.string()
+		return CertidaoKindNascimento
 	case CertidaoKindCasamento.number():
-		return CertidaoKindCasamento.string()
+		return CertidaoKindCasamento
 	case CertidaoKindCasamentoReligioso.number():
-		return CertidaoKindCasamentoReligioso.string()
+		return CertidaoKindCasamentoReligioso
 	case CertidaoKindObito.number():
-		return CertidaoKindObito.string()
+		return CertidaoKindObito
 	case CertidaoKindNatimorto.number():
-		return CertidaoKindNatimorto.string()
+		return CertidaoKindNatimorto
 	case CertidaoKindProclamas.number():
-		return CertidaoKindProclamas.string()
+		return CertidaoKindProclamas
 	case CertidaoKindEspecial.number():
-		return CertidaoKindEspecial.string()
+		return CertidaoKindEspecial
 	case CertidaoKindEmancipacao.number():
-		return CertidaoKindEmancipacao.string()
+		return CertidaoKindEmancipacao
 	case CertidaoKindInterdicao.number():
-		return CertidaoKindInterdicao.string()
+		return CertidaoKindInterdicao
 	default:
-		return CertidaoKindNone.string()
+		return CertidaoKindNone
 	}
 }
 
