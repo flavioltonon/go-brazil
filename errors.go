@@ -3,7 +3,7 @@ package brazil
 import "errors"
 
 var (
-	errIncorrectLenghtCertidaoNumber = errors.New("Certidão numbers must contain 30 numbers")
+	errIncorrectLenghtCertidaoNumber = errors.New("Certidão numbers must contain 32 numbers")
 	errInvalidCertidaoYear           = errors.New("Certidão year input is not valid")
 	errInvalidCertidaoFirstDigit     = errors.New("Certidão number first digit input is not valid")
 	errInvalidCertidaoSecondDigit    = errors.New("Certidão number second digit input is not valid")
