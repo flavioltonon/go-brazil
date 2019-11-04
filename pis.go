@@ -23,17 +23,17 @@ func (p pis) Number(mask bool) string {
 func ParsePIS(number string) (pis, error) {
 	number = regexp.MustCompile(`[^0-9]`).ReplaceAllString(number, "")
 	if len(number) != 11 && len(number) != 13 {
-		return pis{}, errIncorrectLenghtPISNumber
+		return pis{}, ErrIncorrectLenghtPISNumber
 	}
 
 	pisNumber := pisNumber(number)
 
 	if pisNumber.isFalsePositive() {
-		return pis{}, errInvalidPISNumber
+		return pis{}, ErrInvalidPISNumber
 	}
 
 	if !pisNumber.hasValidDigit() {
-		return pis{}, errInvalidPISNumber
+		return pis{}, ErrInvalidPISNumber
 	}
 
 	return pis{

@@ -47,7 +47,7 @@ func (m mobile) Number(mask bool) string {
 func ParseMobile(number string) (mobile, error) {
 	number = regexp.MustCompile(`[^0-9]`).ReplaceAllString(number, "")
 	if len(number) != 13 {
-		return mobile{}, errIncorrectFormatMobileNumber
+		return mobile{}, ErrIncorrectFormatMobileNumber
 	}
 
 	countryCode := countryCode(number[:2])
@@ -55,15 +55,15 @@ func ParseMobile(number string) (mobile, error) {
 	mobileNumber := mobileNumber(number[4:])
 
 	if !countryCode.isValid() {
-		return mobile{}, errInvalidBrazilianCountryCode
+		return mobile{}, ErrInvalidBrazilianCountryCode
 	}
 
 	if !areaCode.isValid() {
-		return mobile{}, errInvalidBrazilianAreaCode
+		return mobile{}, ErrInvalidBrazilianAreaCode
 	}
 
 	if !mobileNumber.isValid() {
-		return mobile{}, errInvalidBrazilianMobileNumber
+		return mobile{}, ErrInvalidBrazilianMobileNumber
 	}
 
 	return mobile{

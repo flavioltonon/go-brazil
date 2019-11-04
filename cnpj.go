@@ -32,17 +32,17 @@ func ParseCNPJ(number string) (cnpj, error) {
 	number = regexp.MustCompile(`[^0-9]`).ReplaceAllString(number, "")
 
 	if len(number) != 14 {
-		return cnpj{}, errIncorrectLenghtCNPJNumber
+		return cnpj{}, ErrIncorrectLenghtCNPJNumber
 	}
 
 	cnpjNumber := cnpjNumber(number)
 
 	if !cnpjNumber.hasValidFirstDigit() {
-		return cnpj{}, errInvalidCNPJFirstDigit
+		return cnpj{}, ErrInvalidCNPJFirstDigit
 	}
 
 	if !cnpjNumber.hasValidSecondDigit() {
-		return cnpj{}, errInvalidCNPJSecondDigit
+		return cnpj{}, ErrInvalidCNPJSecondDigit
 	}
 
 	return cnpj{

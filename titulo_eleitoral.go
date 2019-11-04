@@ -25,21 +25,21 @@ type tituloEleitoralNumber string
 func ParseTituloEleitoral(number string) (tituloEleitoral, error) {
 	number = regexp.MustCompile(`[^0-9]`).ReplaceAllString(number, "")
 	if len(number) != 12 && len(number) != 14 {
-		return tituloEleitoral{}, errIncorrectLenghtTituloEleitoralNumber
+		return tituloEleitoral{}, ErrIncorrectLenghtTituloEleitoralNumber
 	}
 
 	tituloNumber := tituloEleitoralNumber(number)
 
 	if tituloNumber.isFalsePositive() {
-		return tituloEleitoral{}, errInvalidTituloEleitoralNumber
+		return tituloEleitoral{}, ErrInvalidTituloEleitoralNumber
 	}
 
 	if !tituloNumber.hasValidFirstDigit() {
-		return tituloEleitoral{}, errInvalidTituloEleitoralNumber
+		return tituloEleitoral{}, ErrInvalidTituloEleitoralNumber
 	}
 
 	if !tituloNumber.hasValidSecondDigit() {
-		return tituloEleitoral{}, errInvalidTituloEleitoralNumber
+		return tituloEleitoral{}, ErrInvalidTituloEleitoralNumber
 	}
 
 	return tituloEleitoral{

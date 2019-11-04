@@ -107,21 +107,21 @@ func ParseCertidao(number string) (certidao, error) {
 	number = regexp.MustCompile(`[^0-9]`).ReplaceAllString(number, "")
 
 	if len(number) != 32 {
-		return certidao{}, errIncorrectLenghtCertidaoNumber
+		return certidao{}, ErrIncorrectLenghtCertidaoNumber
 	}
 
 	certidaoNumber := certidaoNumber(number)
 
 	if !certidaoNumber.hasValidYear() {
-		return certidao{}, errInvalidCertidaoYear
+		return certidao{}, ErrInvalidCertidaoYear
 	}
 
 	if !certidaoNumber.hasValidFirstDigit() {
-		return certidao{}, errInvalidCertidaoFirstDigit
+		return certidao{}, ErrInvalidCertidaoFirstDigit
 	}
 
 	if !certidaoNumber.hasValidSecondDigit() {
-		return certidao{}, errInvalidCertidaoSecondDigit
+		return certidao{}, ErrInvalidCertidaoSecondDigit
 	}
 
 	return certidao{

@@ -30,21 +30,21 @@ func ParseCPF(number string) (cpf, error) {
 	number = regexp.MustCompile(`[^0-9]`).ReplaceAllString(number, "")
 
 	if len(number) != 11 {
-		return cpf{}, errIncorrectLenghtCPFNumber
+		return cpf{}, ErrIncorrectLenghtCPFNumber
 	}
 
 	cpfNumber := cpfNumber(number)
 
 	if cpfNumber.isFalsePositive() {
-		return cpf{}, errInvalidCPFNumber
+		return cpf{}, ErrInvalidCPFNumber
 	}
 
 	if !cpfNumber.hasValidFirstDigit() {
-		return cpf{}, errInvalidCPFNumber
+		return cpf{}, ErrInvalidCPFNumber
 	}
 
 	if !cpfNumber.hasValidSecondDigit() {
-		return cpf{}, errInvalidCPFNumber
+		return cpf{}, ErrInvalidCPFNumber
 	}
 
 	return cpf{
