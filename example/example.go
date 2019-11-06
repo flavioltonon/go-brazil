@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	brazil "flavioltonon/go-brazil"
+	brazil "github.com/flavioltonon/go-brazil"
 )
 
 func main() {
