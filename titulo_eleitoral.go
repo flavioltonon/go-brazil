@@ -24,7 +24,12 @@ type tituloEleitoralNumber string
 
 func ParseTituloEleitoral(number string) (tituloEleitoral, error) {
 	number = regexp.MustCompile(`[^0-9]`).ReplaceAllString(number, "")
-	if len(number) != 12 && len(number) != 14 {
+	switch len(number) {
+	case 11:
+		number = "0" + number
+	case 12:
+		// OK
+	default:
 		return tituloEleitoral{}, ErrIncorrectLenghtTituloEleitoralNumber
 	}
 
@@ -72,13 +77,14 @@ func RandomTituloEleitoralNumber(mask bool) string {
 		number, _ := strconv.Atoi(string(digitlessTitulo[i]))
 		sum += number * (i + 2)
 	}
+
 	firstDigit := sum % 11
-	if firstDigit == 0 {
+	switch firstDigit {
+	case 0:
 		if stateCodeString == "01" || stateCodeString == "02" {
 			firstDigit = 1
 		}
-	}
-	if firstDigit == 10 {
+	case 10:
 		firstDigit = 0
 	}
 
@@ -90,12 +96,12 @@ func RandomTituloEleitoralNumber(mask bool) string {
 	}
 	sum = sum + firstDigit*9
 	secondDigit := sum % 11
-	if secondDigit == 0 {
+	switch secondDigit {
+	case 0:
 		if stateCodeString == "01" || stateCodeString == "02" {
 			secondDigit = 1
 		}
-	}
-	if secondDigit == 10 {
+	case 10:
 		secondDigit = 0
 	}
 
