@@ -21,6 +21,9 @@ var (
 	ErrIncorrectLenghtPISNumber = errors.New("PIS numbers must contain 11 or 13 numbers")
 	ErrInvalidPISNumber         = errors.New("PIS number input is not valid")
 
+	ErrInvalidCEPFormat = errors.New("CEP format input is different than expected. Expected format: XXXXX-XXX, XXXXXXXX (e.g. 12345-678, 12345678)")
+	ErrInvalidCEPLength = errors.New("CEP numbers must contain 9 digits")
+
 	ErrIncorrectFormatDate = errors.New("Date format input is different than expected. Expected format: DD/MM/YYYY")
 	ErrInvalidYearLimits   = errors.New("Date minYear must be lower than maxYear and higher than zero")
 	ErrNotPastDate         = errors.New("Date must be in the past")
