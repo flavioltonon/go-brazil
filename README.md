@@ -1,13 +1,17 @@
 # go-brazil
 
+[![build](https://github.com/idlebot/go-brazil/actions/workflows/build.yml/badge.svg)](https://github.com/idlebot/go-brazil/actions/workflows/build.yml)
+[![Coverage Status](https://coveralls.io/repos/github/idlebot/go-brazil/badge.svg?branch=main)](https://coveralls.io/github/idlebot/go-brazil?branch=main)
+
+
 Go Brazil is a library for evaluation of brazilian documents and other patterns.
 
  ## Install
- 
+
  ```
  go get github.com/flavioltonon/go-brazil
  ```
- 
+
 ## Usage
 
 In general, the lib usage involves the generation and evaluation of brazilian document numbers and other brazilian patterns, such as mobile numbers.
