@@ -1,8 +1,7 @@
 # go-brazil
 
-[![build](https://github.com/idlebot/go-brazil/actions/workflows/build.yml/badge.svg)](https://github.com/idlebot/go-brazil/actions/workflows/build.yml)
-[![Coverage Status](https://coveralls.io/repos/github/idlebot/go-brazil/badge.svg?branch=main)](https://coveralls.io/github/idlebot/go-brazil?branch=main)
-
+[![build](https://github.com/flavioltonon/go-brazil/actions/workflows/build.yml/badge.svg)](https://github.com/flavioltonon/go-brazil/actions/workflows/build.yml)
+[![Coverage Status](https://coveralls.io/repos/github/flavioltonon/go-brazil/badge.svg?branch=main)](https://coveralls.io/github/flavioltonon/go-brazil?branch=main)
 
 Go Brazil is a library for evaluation of brazilian documents and other patterns.
 
