@@ -1,6 +1,6 @@
 module github.com/flavioltonon/go-brazil
 
-go 1.20
+go 1.21
 
 require (
 	github.com/smartystreets/goconvey v1.8.1
