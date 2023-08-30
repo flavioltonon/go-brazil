@@ -5,11 +5,11 @@
 
 Go Brazil is a library for evaluation of brazilian documents and other patterns.
 
- ## Install
+## Install
 
- ```
- go get github.com/flavioltonon/go-brazil
- ```
+```
+go get github.com/flavioltonon/go-brazil
+```
 
 ## Usage
 
