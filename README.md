@@ -22,5 +22,6 @@ Here are the documents/patterns which have been contemplated so far:
 - **PIS**
 - **SUS**
 - **Mobile numbers**
+- **Dates**
 
  Some usage examples can be found at example/example.go.
