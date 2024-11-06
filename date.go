@@ -19,18 +19,18 @@ const (
 var (
 	delimiters = []string{`\/`, `\.`, `\-`, `[ ]`, `,`, `de`}
 	months     = monthsOfYear{
-		"JAN": 1, "ENE": 1,
-		"FEV": 2, "FEB": 2,
+		"JAN": 1, "J4N": 1,
+		"FEV": 2, "F3B": 2,
 		"MAR": 3, "M4R": 3,
-		"ABR": 4, "APR": 4, "4BR": 4,
-		"MAI": 5, "MAY": 5,
+		"ABR": 4, "4BR": 4,
+		"MAI": 5, "M4I": 5, "M41": 5,
 		"JUN": 6,
 		"JUL": 7, "JU1": 7,
-		"AGO": 8, "AUG": 8, "AG0": 8,
-		"SET": 9, "SEP": 9,
-		"OUT": 10, "OCT": 10,
+		"AGO": 8, "AG0": 8, "4GO": 8, "4G0": 8,
+		"SET": 9, "S3T": 9,
+		"OUT": 10, "0UT": 10,
 		"NOV": 11, "N0V": 11,
-		"DEZ": 12, "DEC": 12, "DIC": 12, "DE2": 12,
+		"DEZ": 12, "D3Z": 12, "DE2": 12, "D32": 12,
 	}
 	monthPattern = `(?:` + digitsPattern + `|(` + strings.Join(months.getMonths(), "|") + `)[\D!ç]{0,7})`
 	datePattern  = `(?i)` + digitsPattern + dateDelimiterPattern + monthPattern + dateDelimiterPattern + digitsPattern
@@ -101,36 +101,28 @@ func getTime(value string) (*time.Time, error) {
 	// Split the string by the date delimiter
 	arr := strings.Split(r, dateDelimiter)
 
-	// Get the day
-	day, err := strconv.Atoi(arr[0])
-	if err != nil {
-		return nil, err
+	// If the array has less than 3 elements, return an error
+	if len(arr) < 3 {
+		return nil, fmt.Errorf("invalid date")
 	}
 
-	// Get the month
-	month, err := strconv.Atoi(normalizeMonth(arr[1]))
-	if err != nil {
-		return nil, err
-	}
-
-	// Get the year
-	year, err := strconv.Atoi(arr[len(arr)-1:][0])
-	if err != nil {
-		return nil, err
-	}
+	// Set the day, month and year
+	day := arr[0]
+	month := normalizeMonth(arr[1])
+	year := arr[len(arr)-1:][0]
 
 	// Set the default date format and year digits
 	dateFormat := DateFormatLong
 	yearDigits := "%04d"
 
 	// If the year has 2 digits, change the date format and the year digits
-	if len(arr[2]) == 2 {
+	if len(year) == 2 {
 		dateFormat = DateFormatShort
 		yearDigits = "%02d"
 	}
 
 	// Parse the date with the format obtained
-	date, err := time.Parse(dateFormat, fmt.Sprintf("%02d/%02d/"+yearDigits, day, month, year))
+	date, err := time.Parse(dateFormat, fmt.Sprintf("%02d/%02d/"+yearDigits, parseToint(day), parseToint(month), parseToint(year)))
 	if err != nil {
 		return nil, err
 	}
@@ -157,4 +149,15 @@ func normalizeMonth(text string) string {
 
 	// Return the month number with 2 digits
 	return fmt.Sprintf("%02d", value)
+}
+
+func parseToint(value string) int {
+	if value == "" {
+		return 0
+	}
+	i, err := strconv.Atoi(value)
+	if err != nil {
+		return 0
+	}
+	return i
 }

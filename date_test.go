@@ -12,16 +12,12 @@ func Test_normalizeMonth(t *testing.T) {
 			values []string
 		}{
 			{
-				name:   "PT",
+				name:   "short",
+				values: []string{"JAN", "FEV", "MAR", "ABR", "MAI", "JUN", "JUL", "AGO", "SET", "OUT", "NOV", "DEZ"},
+			},
+			{
+				name:   "full",
 				values: []string{"JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"},
-			},
-			{
-				name:   "EN",
-				values: []string{"JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTUBER", "NOVEMBER", "DECEMBER"},
-			},
-			{
-				name:   "ES",
-				values: []string{"ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"},
 			},
 		}
 
@@ -46,15 +42,20 @@ func Test_normalizeMonth(t *testing.T) {
 
 func TestParseDate(t *testing.T) {
 	t.Run("should return an error when the date is not valid", func(t *testing.T) {
-		_, err := ParseDate("01 13 2020")
-		if err == nil {
-			t.Errorf("Expected an error, got nil")
+		for _, value := range []string{
+			"01 13 2020",
+			"01 AGO",
+		} {
+			_, err := ParseDate(value)
+			if err == nil {
+				t.Errorf("Expected an error, got nil")
+			}
 		}
 	})
 	t.Run("should return a valid date", func(t *testing.T) {
 		for value, want := range map[string]string{
 			"27 de AG0STO de 1994": "27/08/1994",
-			"09 JUL/JUL 1932":      "09/07/1932",
+			"9 JUL/JUL 1932":       "09/07/1932",
 			"19/ABRIL/1943":        "19/04/1943",
 			"15.NOVEMBRO.1889":     "15/11/1889",
 			"11-SET-01":            "11/09/2001",
@@ -64,7 +65,7 @@ func TestParseDate(t *testing.T) {
 			"1-06-1920":            "01/06/1920",
 			"21.09.2012":           "21/09/2012",
 			"1,5,1889":             "01/05/1889",
-			"20 N0VEMBER 1695":     "20/11/1695",
+			"20 Nov 1695":          "20/11/1695",
 			"9 MAI/MAY 1988":       "09/05/1988",
 		} {
 			got, err := ParseDate(value)
