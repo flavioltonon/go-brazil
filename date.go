@@ -142,7 +142,7 @@ func getTime(value string) (*time.Time, error) {
 	// Parse the date with the format obtained.
 	date, err := time.Parse(dateFormat, fmt.Sprintf("%02d/%02d/"+yearDigits, parseToint(day), parseToint(month), parseToint(year)))
 	if err != nil {
-		return nil, fmt.Errorf("%w: %w", ErrInvalidDate, err)
+		return nil, fmt.Errorf("%w: %s", ErrInvalidDate, err.Error())
 	}
 
 	// Return the date.
