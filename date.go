@@ -17,7 +17,7 @@ const (
 )
 
 var (
-	delimiters = []string{`\/`, `\.`, `\-`, `[ ]`, `,`}
+	delimiters = []string{`\/`, `\.`, `\-`, `[ ]`, `,`, `de`}
 	months     = monthsOfYear{
 		"JAN": 1, "ENE": 1,
 		"FEV": 2, "FEB": 2,
@@ -49,18 +49,17 @@ func (m monthsOfYear) getMonths() []string {
 
 // Date struct
 type date struct {
-	value string
+	value time.Time
 }
 
 // Time returns the date as a time.Time
 func (d date) Time() time.Time {
-	t, _ := time.Parse(DateFormatLong, d.value)
-	return t
+	return d.value
 }
 
 // String returns the date as a string
 func (d date) String() string {
-	return d.value
+	return d.value.Format(DateFormatLong)
 }
 
 // ParseDate parses a date from a string
@@ -92,13 +91,13 @@ func ParseDate(value string) (date, error) {
 	}
 
 	// Return the date
-	return date{value: time.Format(DateFormatLong)}, nil
+	return date{value: *time}, nil
 }
 
 // Get the time from the string
 func getTime(value string) (*time.Time, error) {
 	// Replace all non-word characters with the date delimiter
-	r := regexp.MustCompile(`\W+`).ReplaceAllString(value, dateDelimiter)
+	r := regexp.MustCompile(`(?:\W|(`+strings.Join(delimiters, "|")+`)\W)+`).ReplaceAllString(value, dateDelimiter)
 	// Split the string by the date delimiter
 	arr := strings.Split(r, dateDelimiter)
 
