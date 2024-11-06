@@ -40,7 +40,7 @@ type monthsOfYear map[string]int8
 
 // GetMonths returns the months of the year
 func (m monthsOfYear) getMonths() []string {
-	var keys []string
+	keys := make([]string, 0, len(m))
 	for name := range m {
 		keys = append(keys, name)
 	}
