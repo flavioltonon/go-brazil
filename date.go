@@ -57,7 +57,7 @@ func (d date) Time() time.Time {
 	return d.value
 }
 
-// String returns the date as a string
+// String returns the date as a string with a DateFormatLong format.
 func (d date) String() string {
 	return d.value.Format(DateFormatLong)
 }
