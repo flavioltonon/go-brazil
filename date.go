@@ -32,14 +32,14 @@ var (
 		"NOV": 11, "N0V": 11,
 		"DEZ": 12, "DEC": 12, "DIC": 12, "DE2": 12,
 	}
-	monthPattern = `(?:` + digitsPattern + `|(` + strings.Join(months.GetMonths(), "|") + `)[\D!ç]{0,7})`
+	monthPattern = `(?:` + digitsPattern + `|(` + strings.Join(months.getMonths(), "|") + `)[\D!ç]{0,7})`
 	datePattern  = `(?i)` + digitsPattern + dateDelimiterPattern + monthPattern + dateDelimiterPattern + digitsPattern
 )
 
 type monthsOfYear map[string]int8
 
 // GetMonths returns the months of the year
-func (m monthsOfYear) GetMonths() []string {
+func (m monthsOfYear) getMonths() []string {
 	var keys []string
 	for name := range m {
 		keys = append(keys, name)
