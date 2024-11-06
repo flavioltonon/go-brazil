@@ -17,18 +17,29 @@ const (
 )
 
 var (
-	delimiters = []string{`\/`, `\.`, `\-`, `[ ]`}
-	months     = MonthsOfYear{
-		"JAN": 1, "FEV": 2, "MAR": 3, "ABR": 4, "MAI": 5, "JUN": 6, "JUL": 7, "AGO": 8, "SET": 9, "OUT": 10, "NOV": 11, "DEZ": 12,
+	delimiters = []string{`\/`, `\.`, `\-`, `[ ]`, `,`}
+	months     = monthsOfYear{
+		"JAN": 1, "ENE": 1,
+		"FEV": 2, "FEB": 2,
+		"MAR": 3, "M4R": 3,
+		"ABR": 4, "APR": 4, "4BR": 4,
+		"MAI": 5, "MAY": 5,
+		"JUN": 6,
+		"JUL": 7, "JU1": 7,
+		"AGO": 8, "AUG": 8, "AG0": 8,
+		"SET": 9, "SEP": 9,
+		"OUT": 10, "OCT": 10,
+		"NOV": 11, "N0V": 11,
+		"DEZ": 12, "DEC": 12, "DIC": 12, "DE2": 12,
 	}
 	monthPattern = `(?:` + digitsPattern + `|(` + strings.Join(months.GetMonths(), "|") + `)[\D!ç]{0,7})`
 	datePattern  = `(?i)` + digitsPattern + dateDelimiterPattern + monthPattern + dateDelimiterPattern + digitsPattern
 )
 
-type MonthsOfYear map[string]int8
+type monthsOfYear map[string]int8
 
 // GetMonths returns the months of the year
-func (m MonthsOfYear) GetMonths() []string {
+func (m monthsOfYear) GetMonths() []string {
 	var keys []string
 	for name := range m {
 		keys = append(keys, name)
