@@ -27,18 +27,7 @@ var (
 	delimiters = []string{`\/`, `\.`, `\-`, `[ ]`, `,`, `de`}
 	// months is a map of month abbreviations to their corresponding month numbers.
 	months = monthsOfYear{
-		"JAN": 1, "J4N": 1,
-		"FEV": 2, "F3B": 2,
-		"MAR": 3, "M4R": 3,
-		"ABR": 4, "4BR": 4,
-		"MAI": 5, "M4I": 5, "M41": 5,
-		"JUN": 6,
-		"JUL": 7, "JU1": 7,
-		"AGO": 8, "AG0": 8, "4GO": 8, "4G0": 8,
-		"SET": 9, "S3T": 9,
-		"OUT": 10, "0UT": 10,
-		"NOV": 11, "N0V": 11,
-		"DEZ": 12, "D3Z": 12, "DE2": 12, "D32": 12,
+		"JAN": 1, "FEV": 2, "MAR": 3, "ABR": 4, "MAI": 5, "JUN": 6, "JUL": 7, "AGO": 8, "SET": 9, "OUT": 10, "NOV": 11, "DEZ": 12,
 	}
 	// monthPattern is the regex pattern for matching month names or numbers.
 	monthPattern = `(?:` + digitsPattern + `|(` + strings.Join(months.getMonths(), "|") + `)[\D!ç]{0,7})`

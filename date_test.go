@@ -68,12 +68,12 @@ func TestParseDate(t *testing.T) {
 	})
 	t.Run("should return a valid date", func(t *testing.T) {
 		for value, want := range map[string]string{
-			"27 de AG0STO de 1994": "27/08/1994",
+			"27 de AGOSTO de 1994": "27/08/1994",
 			"9 JUL/JUL 1932":       "09/07/1932",
 			"19/ABRIL/1943":        "19/04/1943",
 			"15.NOVEMBRO.1889":     "15/11/1889",
 			"11-SET-01":            "11/09/2001",
-			"1 JU1HO 2024":         "01/07/2024",
+			"1 JULHO 2024":         "01/07/2024",
 			"01-JUNHO-1920":        "01/06/1920",
 			"1/1/1992":             "01/01/1992",
 			"1-06-1920":            "01/06/1920",
