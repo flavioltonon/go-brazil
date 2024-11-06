@@ -11,7 +11,7 @@ import (
 const (
 	dateDelimiter        = "/"
 	dateDelimiterPattern = `[ ]{0,1}%s[ ]{0,1}`
-	digitsPattern        = "\\d+"
+	digitsPattern        = `\d+`
 	DateFormatShort      = "02/01/06"
 	DateFormatLong       = "02/01/2006"
 )
