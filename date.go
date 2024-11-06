@@ -73,7 +73,7 @@ func (d date) String() string {
 }
 
 // ParseDate parses a date from a string and returns a date struct.
-// Here are some possibilities to usage:
+// Here are some possibilities for usage:
 // - "5 de Abril de 1999"
 // - "05 Abril 1999"
 // - "5-4-1999"
