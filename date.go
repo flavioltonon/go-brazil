@@ -105,7 +105,7 @@ func ParseDate(value string) (date, error) {
 
 	// If the time is nil, return an error.
 	if time == nil {
-		return date{}, fmt.Errorf("invalid date")
+		return date{}, ErrInvalidDate
 	}
 
 	// Return the date.
@@ -121,7 +121,7 @@ func getTime(value string) (*time.Time, error) {
 
 	// If the array has less than 3 elements, return an error.
 	if len(arr) < 3 {
-		return nil, fmt.Errorf("invalid date")
+		return nil, ErrInvalidDate
 	}
 
 	// Set the day, month, and year.
@@ -142,7 +142,7 @@ func getTime(value string) (*time.Time, error) {
 	// Parse the date with the format obtained.
 	date, err := time.Parse(dateFormat, fmt.Sprintf("%02d/%02d/"+yearDigits, parseToint(day), parseToint(month), parseToint(year)))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("%w: %w", ErrInvalidDate, err)
 	}
 
 	// Return the date.

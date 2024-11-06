@@ -1,6 +1,7 @@
 package brazil
 
 import (
+	"errors"
 	"fmt"
 	"testing"
 )
@@ -20,7 +21,6 @@ func Test_normalizeMonth(t *testing.T) {
 				values: []string{"JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"},
 			},
 		}
-
 		for _, tt := range tableTests {
 			for idx, name := range tt.values {
 				want := fmt.Sprintf("%02d", idx+1)
@@ -42,13 +42,27 @@ func Test_normalizeMonth(t *testing.T) {
 
 func TestParseDate(t *testing.T) {
 	t.Run("should return an error when the date is not valid", func(t *testing.T) {
-		for _, value := range []string{
-			"01 13 2020",
-			"01 AGO",
-		} {
-			_, err := ParseDate(value)
+		tableTests := []struct {
+			name  string
+			value string
+			want  error
+		}{
+			{
+				value: "01 13 2020",
+				want:  ErrInvalidDate,
+			},
+			{
+				value: "01 AGO",
+				want:  ErrInvalidDate,
+			},
+		}
+		for _, tt := range tableTests {
+			_, err := ParseDate(tt.value)
 			if err == nil {
 				t.Errorf("Expected an error, got nil")
+			}
+			if !errors.Is(err, tt.want) {
+				t.Errorf("Expected %s, got %#v", tt.want, err)
 			}
 		}
 	})
