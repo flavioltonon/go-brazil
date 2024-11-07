@@ -129,9 +129,11 @@ func getTime(value string) (*time.Time, error) {
 	}
 
 	// Parse the date with the format obtained.
-	date, err := time.Parse(dateFormat, fmt.Sprintf("%02d/%02d/"+yearDigits, parseToint(day), parseToint(month), parseToint(year)))
+	layout :=  fmt.Sprintf("%02d/%02d/"+yearDigits, parseToint(day), parseToint(month), parseToint(year))
+	
+	date, err := time.Parse(dateFormat, layout)
 	if err != nil {
-		return nil, fmt.Errorf("%w: %s", ErrInvalidDate, err.Error())
+		return nil, fmt.Errorf("parsing time with layout %q: %w", layout, ErrInvalidDate)
 	}
 
 	// Return the date.
