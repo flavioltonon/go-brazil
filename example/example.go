@@ -73,6 +73,24 @@ func main() {
 	// ------------------------------------------------------------------------------------------------
 
 	{
+		// Generates a new alphanumeric CNPJ number (IN RFB n° 2.229/2024) in the string format XX.XXX.XXX/XXXX-XX
+		cnpjNumber := brazil.RandomAlphanumericCNPJNumber(true)
+
+		// Creates a new CNPJ struct
+		cnpj, err := brazil.ParseAlphanumericCNPJ(cnpjNumber)
+		if err != nil {
+			log.Println(err)
+			log.Println(cnpjNumber)
+			return
+		}
+
+		// Returns CNPJ number
+		log.Println(cnpj.Number(true))
+	}
+
+	// ------------------------------------------------------------------------------------------------
+
+	{
 		// Generates a new PIS number in the string format XXX.XXXXX.XX-X
 		pisNumber := brazil.RandomPISNumber(true)
 
@@ -186,6 +204,24 @@ func main() {
 
 		// Creates a new CNPJ struct
 		cnpj, err := brazil.Validate("cnpj", cnpjNumber, true)
+		if err != nil {
+			log.Println(err)
+			log.Println(cnpjNumber)
+			return
+		}
+
+		// Returns CNPJ number
+		log.Println(cnpj)
+	}
+
+	// ------------------------------------------------------------------------------------------------
+
+	{
+		// Generates a new alphanumeric CNPJ number (IN RFB n° 2.229/2024) in the string format XX.XXX.XXX/XXXX-XX
+		cnpjNumber := brazil.RandomAlphanumericCNPJNumber(true)
+
+		// Creates a new CNPJ struct
+		cnpj, err := brazil.Validate("alphanumericCnpj", cnpjNumber, true)
 		if err != nil {
 			log.Println(err)
 			log.Println(cnpjNumber)

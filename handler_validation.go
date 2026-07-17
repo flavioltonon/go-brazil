@@ -7,19 +7,27 @@ import (
 type documentType string
 
 const (
-	CNPJ             documentType = "cnpj"
-	CPF              documentType = "cpf"
-	MOBILE           documentType = "mobile"
-	PIS              documentType = "pis"
-	SUS              documentType = "sus"
-	TITULO_ELEITORAL documentType = "tituloEleitoral"
-	CERTIDAO         documentType = "certidao"
+	CNPJ              documentType = "cnpj"
+	ALPHANUMERIC_CNPJ documentType = "alphanumericCnpj"
+	CPF               documentType = "cpf"
+	MOBILE            documentType = "mobile"
+	PIS               documentType = "pis"
+	SUS               documentType = "sus"
+	TITULO_ELEITORAL  documentType = "tituloEleitoral"
+	CERTIDAO          documentType = "certidao"
 )
 
 func Validate(t documentType, number string, mask bool) (string, error) {
 	switch t {
 	case CNPJ:
 		cnpj, err := ParseCNPJ(number)
+		if err != nil {
+			return "", err
+		}
+		return cnpj.Number(mask), err
+
+	case ALPHANUMERIC_CNPJ:
+		cnpj, err := ParseAlphanumericCNPJ(number)
 		if err != nil {
 			return "", err
 		}
