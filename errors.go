@@ -11,6 +11,8 @@ var (
 	ErrIncorrectLenghtCNPJNumber = errors.New("CNPJ numbers must contain 14 numbers")
 	ErrInvalidCNPJFirstDigit     = errors.New("CNPJ number first digit input is not valid")
 	ErrInvalidCNPJSecondDigit    = errors.New("CNPJ number second digit input is not valid")
+	ErrInvalidCNPJCharacter      = errors.New("CNPJ numbers must contain only characters 0-9 or A-Z in the first 12 positions and 0-9 in the check digits")
+	ErrRepeatedCNPJNumber        = errors.New("CNPJ numbers must not have all characters equal")
 
 	ErrIncorrectLenghtCPFNumber = errors.New("CPF numbers must contain 11 numbers")
 	ErrInvalidCPFNumber         = errors.New("CPF number input is not valid")
